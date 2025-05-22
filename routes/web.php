@@ -16,6 +16,7 @@ use App\Http\Controllers\PermohonanController;
 use App\Http\Controllers\PengurusanController;
 use App\Http\Controllers\MesyuaratController;
 
+use App\Http\Controllers\PdfController;
 
 
 
@@ -70,10 +71,14 @@ Route::middleware('auth')->group(function () {
     Route::put('/pengguna/{id}', [PenggunaController::class, 'update'])->name('pengguna.update');
     Route::delete('/pengguna/{id}', [PenggunaController::class, 'destroy'])->name('pengguna.destroy');
 
+    // GENERATE PDF
+    Route::get('/permohonan/tambah', [PdfController::class, 'showForm'])->name('permohonan.tambah');
+    Route::post('/permohonan/tambah', [PdfController::class, 'generatePdf'])->name('permohonan.generatePdf');
 
     Route::get('/permohonan', [PermohonanController::class, 'index'])->name('permohonan.index');
     Route::post('/permohonan', [PermohonanController::class, 'store'])->name('permohonan.store');
     Route::get('/permohonan/edit/{id}', [PermohonanController::class, 'showUpdateForm'])->name('permohonan.showUpdateForm');
+    Route::get('/permohonan/{id}/edit', [PermohonanController::class, 'edit'])->name('permohonan.edit');
     Route::post('/permohonan/update/{id}', [PermohonanController::class, 'update'])->name('permohonan.update');
 
     Route::get('/pengurusan', [PengurusanController::class, 'index'])->name('pengurusan.index');

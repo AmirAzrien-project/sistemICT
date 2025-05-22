@@ -74,8 +74,7 @@
                     @endif
                     @if (in_array(auth()->user()->type, [2, 3, 4]))
                         <li class="nav-item">
-                            <a class="nav-link nav-link-johor active"
-                                href="{{ route('mesyuarat.index') }}">MESYUARAT</a>
+                            <a class="nav-link nav-link-johor" href="{{ route('mesyuarat.index') }}">MESYUARAT</a>
                         </li>
                     @endif
                 </ul>
@@ -188,28 +187,31 @@
                             1 => 'Senarai Semak Permohonan Kelulusan Teknikal Projek Teknologi Maklumat dan Komunikasi (ICT) Kerajaan Negeri Johor',
                             2 => 'Borang Permohonan Kelulusan Teknikal Projek ICT',
                             3 => 'Cabutan Minit Mesyuarat JPICT Jabatan (berkenaan kelulusan permohonan projek)',
-                            4 => 'Kertas Kerja Permohonan Kelulusan Teknikal Projek ICT',
                             5 => 'Slaid Permohonan Kelulusan Teknikal Projek ICT',
                         ];
                     @endphp
 
-                    @for ($i = 1; $i <= 5; $i++)
+                    @foreach ($dokumenList as $key => $dokumen)
                         <div class="mb-3">
-                            <label class="form-label fw-semibold" for="dokumen{{ $i }}">
-                                Dokumen {{ $i }}: {{ $dokumenList[$i] }}
+                            <label class="form-label fw-semibold" for="dokumen{{ $key }}">
+                                Dokumen {{ $key }}: {{ $dokumen }}
                                 <span class="text-danger">*</span>
                             </label>
-                            <input type="file" class="form-control" id="dokumen{{ $i }}"
-                                name="dokumen{{ $i }}" required accept=".pdf,.doc,.docx,.xls,.xlsx"
-                                aria-describedby="dokumen{{ $i }}Help" />
-                            <div id="dokumen{{ $i }}Help" class="form-text">
+                            <input type="file" class="form-control" id="dokumen{{ $key }}"
+                                name="dokumen{{ $key }}" required accept=".pdf,.doc,.docx,.xls,.xlsx"
+                                aria-describedby="dokumen{{ $key }}Help" />
+                            <div id="dokumen{{ $key }}Help" class="form-text">
                             </div>
                         </div>
-                    @endfor
+                    @endforeach
                 </div>
 
                 <button type="submit" class="btn btn-primary px-4 fw-semibold">Hantar Permohonan</button>
             </form>
+            <br>
+            <a href="{{ route('permohonan.tambah') }}" class="btn btn-primary px-4 fw-semibold">
+                Isi Dokumen 4 : Kertas Kerja
+            </a>
         </div>
 
         <!-- Applications List Card -->
@@ -288,10 +290,11 @@
                                             <i class="bi bi-eye"></i> Lihat
                                         </button>
 
-                                        <a href="{{ route('permohonan.showUpdateForm', $permohonan->id) }}"
+                                        <a href="{{ route('permohonan.edit', $permohonan->id) }}"
                                             class="btn btn-warning btn-sm d-flex align-items-center gap-1">
                                             <i class="bi bi-pencil-square"></i> Kemaskini
                                         </a>
+
                                     </div>
                                 </td>
 
@@ -383,93 +386,6 @@
                         @endforelse
                     </tbody>
                 </table>
-
-                {{-- update maklumat permohonan --}}
-                @if (isset($selectedPermohonan))
-                    <hr class="my-5">
-
-                    <div class="card shadow-sm rounded-4 p-4 p-md-5 mx-auto"
-                        style="max-width: auto;overflow-x: unset !important;">
-                        <h5 class="mb-4 text-primary fw-bold">Kemaskini Permohonan</h5>
-
-                        <form action="{{ route('permohonan.update', $selectedPermohonan->id) }}" method="POST"
-                            enctype="multipart/form-data" novalidate>
-
-                            @csrf
-
-                            <div class="form-floating mb-4">
-                                <input type="text" name="tajuk" id="tajuk"
-                                    class="form-control @error('tajuk') is-invalid @enderror"
-                                    value="{{ old('tajuk', $selectedPermohonan->tajuk) }}"
-                                    placeholder="Tajuk Permohonan" required>
-                                <label for="tajuk">Tajuk</label>
-                                @error('tajuk')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="form-floating mb-4">
-                                <input type="tel" name="notel" id="notel"
-                                    class="form-control @error('notel') is-invalid @enderror"
-                                    value="{{ old('notel', $selectedPermohonan->notel) }}" placeholder="No Telefon"
-                                    required>
-                                <label for="notel">notel</label>
-                                @error('notel')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="form-floating mb-4">
-                                <textarea name="keterangan" id="keterangan" class="form-control @error('keterangan') is-invalid @enderror"
-                                    placeholder="Keterangan" style="height: 140px;" required>{{ old('keterangan', $selectedPermohonan->keterangan) }}</textarea>
-                                <label for="keterangan">Keterangan</label>
-                                @error('keterangan')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="form-label">Dokumen (Muat Naik Semula Semua Dokumen)</label>
-                                @php
-                                    $dokumenNames = [
-                                        'Senarai Semak Permohonan Kelulusan Teknikal Projek Teknologi Maklumat dan Komunikasi (ICT) Kerajaan Negeri Johor',
-                                        'Borang Permohonan Kelulusan Teknikal Projek ICT',
-                                        'Cabutan Minit Mesyuarat JPICT Jabatan (berkenaan kelulusan permohonan projek)',
-                                        'Kertas Kerja Permohonan Kelulusan Teknikal Projek ICT',
-                                        'Slaid Permohonan Kelulusan Teknikal Projek ICT',
-                                    ];
-                                @endphp
-
-                                @for ($i = 1; $i <= 5; $i++)
-                                    <div class="mb-3">
-                                        <label for="dokumen{{ $i }}" class="form-label">
-                                            {{ $dokumenNames[$i - 1] }}
-                                        </label>
-                                        <input type="file" name="dokumen{{ $i }}"
-                                            id="dokumen{{ $i }}" class="form-control">
-                                        @php
-                                            $dokumenField = 'dokumen' . $i;
-                                            $existingFile = $selectedPermohonan->$dokumenField;
-                                        @endphp
-                                        @if ($existingFile)
-                                            <small class="text-muted">
-                                                Dokumen sedia ada:
-                                                <a href="{{ asset('storage/dokumen/' . $existingFile) }}"
-                                                    target="_blank" class="text-decoration-none text-primary">
-                                                    Lihat/Buka Dokumen
-                                                </a>
-                                            </small>
-                                        @endif
-                                    </div>
-                                @endfor
-                            </div>
-
-                            <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm">
-                                Hantar Kemaskini
-                            </button>
-                        </form>
-                    </div>
-                @endif
 
                 {{-- Pagination --}}
                 <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap gap-3">

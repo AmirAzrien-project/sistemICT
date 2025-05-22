@@ -56,7 +56,7 @@ class PermohonanController extends Controller
             'keterangan' => $request->keterangan,
             'status_sekretariat' => 'Menunggu',
         ]);
-        
+
         $permohonan->fill($dokumenPaths); // masukkan dokumen1-5
         $permohonan->save();
 
@@ -66,16 +66,11 @@ class PermohonanController extends Controller
         ], 201);
     }
 
-    public function showUpdateForm($id)
+    public function edit($id)
     {
         $selectedPermohonan = Permohonan::findOrFail($id);
-        $permohonans = Permohonan::where('id_pekerja', auth()->user()->id_pekerja)
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-
-        return view('permohonan.index', compact('selectedPermohonan', 'permohonans'));
+        return view('permohonan.edit', compact('selectedPermohonan'));
     }
-
 
     public function update(Request $request, $id)
     {
