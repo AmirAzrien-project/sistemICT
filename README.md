@@ -25,34 +25,63 @@ Ia direka khas untuk pengguna dalam sektor kerajaan bagi memohon, mengurus dan m
 
 ---
 
-## 🚀 Installation
+Berikut terjemahan penuh dalam Bahasa Melayu ringkas untuk dimasukkan ke dalam README atau panduan pemasangan:
 
-1. **Clone repo**
-git clone [https://github.com/AmirAzrien/SistemICT.git](https://github.com/AmirAzrien/SistemICT.git)
+````
+# 🚀 Panduan Pemasangan SistemICT
+
+### 1. Clone Repository
+
+Muat turun kod aplikasi dari GitHub.
+
+```bash
+git clone https://github.com/AmirAzrien/SistemICT.git
 cd SistemICT
+````
 
+### 2. Tetapkan Fail Persekitaran
 
-2. **Salin dan ubah suai `.env`**
+Aplikasi ini menggunakan fail `.env` untuk tetapan seperti sambungan ke pangkalan data.
 
+```bash
 cp .env.example .env
+```
 
+Selepas salin, **buka fail `.env`** menggunakan editor pilihan anda. Tukar maklumat seperti `DB_DATABASE`, `DB_USERNAME`, dan `DB_PASSWORD` supaya sesuai dengan pangkalan data anda. Simpan fail selepas ubah suai.
 
-3. **Pasang dependensi**
+### 3. Pasang Keperluan Projek
 
+SistemICT bergantung pada 'library' PHP dan Node.js tertentu.
+
+```bash
 composer install
 npm install && npm run dev
+```
 
+* `composer install` akan pasang semua keperluan PHP.
+* `npm install && npm run dev` pula akan pasang keperluan frontend dan bina fail CSS/JS.
 
-4. **Setup database**
+### 4. Sediakan Pangkalan Data
 
+Sediakan pangkalan data dan masukkan data asas.
+
+```bash
 php artisan migrate --seed
+```
 
+Arahan ini akan cipta semua jadual dan isikan data contoh untuk sistem berfungsi dengan betul.
 
-5. **Jalankan sistem**
+### 5. Jalankan Aplikasi
 
+Akhir sekali, jalankan 'local server' untuk guna SistemICT di pelayar web.
+
+```bash
 php artisan serve
+```
 
+Selepas server berjalan, satu pautan seperti `http://127.0.0.1:8000` akan dipaparkan. **Buka pautan itu di pelayar web anda** untuk mula guna aplikasi SistemICT.
 
+---
 
 ## 🧪 Akaun Demo
 
