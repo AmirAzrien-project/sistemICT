@@ -1,4 +1,4 @@
-# Permohonan Projek JPICT 🖥️📄
+# Permohonan Kelulusan Projek JPICT 🖥️📄
 
 Sistem ini dibangunkan untuk memudahkan proses permohonan projek ICT melalui Jawatankuasa Projek ICT (JPICT).
 Ia direka khas untuk pengguna dalam sektor kerajaan bagi memohon, mengurus dan menyemak status projek ICT yang dicadangkan.
