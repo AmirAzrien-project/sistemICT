@@ -25,9 +25,7 @@ Ia direka khas untuk pengguna dalam sektor kerajaan bagi memohon, mengurus dan m
 
 ---
 
-Berikut terjemahan penuh dalam Bahasa Melayu ringkas untuk dimasukkan ke dalam README atau panduan pemasangan:
 
-````
 # 🚀 Panduan Pemasangan SistemICT
 
 ### 1. Clone Repository
@@ -79,17 +77,20 @@ Akhir sekali, jalankan 'local server' untuk guna SistemICT di pelayar web.
 php artisan serve
 ```
 
-Selepas server berjalan, satu pautan seperti `http://127.0.0.1:8000` akan dipaparkan. **Buka pautan itu di pelayar web anda** untuk mula guna aplikasi SistemICT.
+Selepas server berjalan, satu pautan seperti `http://127.0.0.1:8000` akan dipaparkan. **Buka pautan itu di 'browser' anda** untuk mula guna aplikasi SistemICT.
 
 ---
 
 ## 🧪 Akaun Demo
 
 Issue -> Credentials
-| Jenis Pengguna | Emel            | Kata Laluan |
-|----------------|------------------|--------------|
-| Admin Jabatan  | admin@jpict.my   | password     |
-| Pengguna Awam  | user@jpict.my    | password     |
+
+| Jenis Pengguna | Emel                       | Kata Laluan |
+|----------------|----------------------------|-------------|
+| Pengguna Awam  | user.biasa@johor.gov.my    | password    |
+| Sekretariat    | user@johor.gov.my          | password    |
+| Admin Jabatan  | user.admin@johor.gov.my    | password    |
+| Super Admin    | user.super@johor.gov.my    | password    |
 
 ---
 
