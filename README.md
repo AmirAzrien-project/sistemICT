@@ -88,7 +88,7 @@ Issue -> Credentials
 | Jenis Pengguna | Emel                       | Kata Laluan |
 |----------------|----------------------------|-------------|
 | Pengguna Awam  | user.biasa@johor.gov.my    | password    |
-| Sekretariat    | user@johor.gov.my          | password    |
+| Sekretariat    | user.sek@johor.gov.my          | password    |
 | Admin Jabatan  | user.admin@johor.gov.my    | password    |
 | Super Admin    | user.super@johor.gov.my    | password    |
 
