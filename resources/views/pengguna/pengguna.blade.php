@@ -26,14 +26,6 @@
         </div>
     </div>
 
-    {{-- Notification Alert --}}
-    @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
-        </div>
-    @endif
-
     <!-- Header -->
     <nav class="navbar navbar-expand-lg johor-header shadow-sm">
         <div class="container-fluid">
@@ -73,12 +65,39 @@
                             <a class="nav-link nav-link-johor active" href="{{ route('pengguna') }}">PENGGUNA</a>
                         </li>
                     @endif
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-johor" href="{{ route('permohonan.index') }}">PERMOHONAN</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link nav-link-johor dropdown-toggle" href="#"
+                            id="permohonanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            PERMOHONAN
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="permohonanDropdown">
+                            <li>
+                                <a class="dropdown-item" href="{{ route('permohonan.index') }}">PERMOHONAN</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('permohonan.senarai') }}">SENARAI</a>
+                            </li>
+                            @if (in_array(auth()->user()->type, [2, 3, 4]))
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('pengurusan.index') }}">PENGURUSAN</a>
+                                </li>
+                            @endif
+                        </ul>
                     </li>
                     @if (in_array(auth()->user()->type, [2, 3, 4]))
-                        <li class="nav-item">
-                            <a class="nav-link nav-link-johor" href="{{ route('pengurusan.index') }}">PENGURUSAN</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link nav-link-johor dropdown-toggle" href="#"
+                                id="mesyuaratDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                MESYUARAT
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="mesyuaratDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('mesyuarat.index') }}">MESYUARAT</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('mesyuarat.index') }}">PENGURUSAN</a>
+                                </li>
+                            </ul>
                         </li>
                     @endif
                 </ul>
@@ -100,6 +119,14 @@
             </div>
         </div>
     </nav>
+
+    {{-- Notification Alert --}}
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
+        </div>
+    @endif
 
     <!-- Main Content -->
     <div class="container my-5">
@@ -181,16 +208,15 @@
             </div>
 
             <!-- User Table -->
-            <div class="table-responsive rounded-3">
-                <table class="table table-striped table-hover align-middle mb-0">
+            <div class="table-responsive rounded-3" style="overflow-x:auto; min-width: 0;">
+                <table class="table table-striped table-hover align-middle mb-0" style="min-width: 900px;">
                     <thead class="table-primary text-center">
                         <tr style="white-space: nowrap;">
                             <th style="width: 35px;">#</th>
-                            <th class="text-start">Nama Penuh</th>
-                            <th class="text-start">Emel</th>
-                            <th class="text-start">Jawatan</th>
-                            <th class="text-start">Jabatan</th>
-                            {{-- <th class="text-start">Tarikh Daftar</th> --}}
+                            <th class="text-start" style="width: 200px;">Nama Penuh</th>
+                            <th class="text-start" style="width: 200px;">Emel</th>
+                            <th class="text-start" style="width: 200px;">Jawatan</th>
+                            <th class="text-start" style="width: 230px;">Jabatan</th> {{-- Ubah di sini --}}
                             <th class="text-center"></th>
                         </tr>
                     </thead>
@@ -200,10 +226,14 @@
                                 <td class="text-center">
                                     {{ ($users->currentPage() - 1) * $users->perPage() + $loop->iteration }}
                                 </td>
-                                <td style="text-align: left">{{ $user->name }}</td>
-                                <td style="text-align: left">{{ $user->email }}</td>
-                                <td style="text-align: left">{{ $user->jawatan ?? '-' }}</td>
-                                <td style="text-align: left">{{ $user->jabatan ?? '-' }}</td>
+                                <td style="text-align: left; max-width: 200px">{{ $user->name }}</td>
+                                <td style="text-align: left; max-width: 200px">{{ $user->email }}</td>
+                                <td style="text-align: left; max-width: 200px">{{ $user->jawatan ?? '-' }}</td>
+                                <td style="text-align: left; max-width: 230px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; position: relative;">
+                                    <span class="jabatan-ellipsis" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $user->jabatan ?? '-' }}">
+                                        {{ $user->jabatan ?? '-' }}
+                                    </span>
+                                </td>
                                 {{-- <td class="text-center">{{ $user->created_at->format('d/m/Y') }}</td> --}}
                                 <td style="width: 20px;">
                                     <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
@@ -452,6 +482,14 @@
                 }, false)
             })
         })()
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+                new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
     </script>
 
 </body>

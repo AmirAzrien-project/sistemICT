@@ -76,7 +76,6 @@ class DashboardController extends Controller
             'jumlah_sekretariat' => User::where('type', 2)->count(),
             'jumlah_admin_jabatan' => User::where('type', 3)->count(),
             'jumlah_super_admin' => User::where('type', 4)->count(),
-            'aktiviti_terkini' => ActivityLog::with('user')->latest()->take(10)->get(),
             'statusCounts' => $statusCounts, // Menambah statusCounts untuk diberikan pada view
         ]);
     }

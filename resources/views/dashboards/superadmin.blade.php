@@ -64,18 +64,39 @@
                             <a class="nav-link nav-link-johor" href="{{ route('pengguna') }}">PENGGUNA</a>
                         </li>
                     @endif
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-johor" href="{{ route('permohonan.index') }}">PERMOHONAN</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link nav-link-johor dropdown-toggle" href="{{ route('permohonan.index') }}"
+                            id="permohonanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            PERMOHONAN
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="permohonanDropdown">
+                            <li>
+                                <a class="dropdown-item" href="{{ route('permohonan.index') }}">PERMOHONAN</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('permohonan.senarai') }}">SENARAI</a>
+                            </li>
+                            @if (in_array(auth()->user()->type, [2, 3, 4]))
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('pengurusan.index') }}">PENGURUSAN</a>
+                                </li>
+                            @endif
+                        </ul>
                     </li>
                     @if (in_array(auth()->user()->type, [2, 3, 4]))
-                        <li class="nav-item">
-                            <a class="nav-link nav-link-johor" href="{{ route('pengurusan.index') }}">PENGURUSAN</a>
-                        </li>
-                    @endif
-                    @if (in_array(auth()->user()->type, [2, 3, 4]))
-                        <li class="nav-item">
-                            <a class="nav-link nav-link-johor active"
-                                href="{{ route('mesyuarat.index') }}">MESYUARAT</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link nav-link-johor dropdown-toggle" href="{{ route('mesyuarat.index') }}"
+                                id="mesyuaratDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                MESYUARAT
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="mesyuaratDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('mesyuarat.index') }}">MESYUARAT</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('mesyuarat.index') }}">PENGURUSAN</a>
+                                </li>
+                            </ul>
                         </li>
                     @endif
                 </ul>
@@ -99,14 +120,28 @@
     </nav>
 
     {{-- Notification Permohonan --}}
-    @if (collect($statusCounts)->sum() > 0)
+    @php
+        $jumlahPerluSemak = $statusCounts['Perlu Semakan Semula'] ?? 0;
+        $jumlahTidakLengkap = $statusCounts['Tidak Lengkap'] ?? 0;
+    @endphp
+    @if ($jumlahPerluSemak > 0 || $jumlahTidakLengkap > 0)
         <div class="alert alert-info alert-dismissible fade show d-flex align-items-center" role="alert"
             data-bs-toggle="collapse" href="#multipleNotifications" aria-expanded="false"
             aria-controls="multipleNotifications">
             <i class="bi bi-info-circle-fill me-2"></i>
             <div>
-                <strong>Penting!</strong> Anda mempunyai beberapa permohonan dengan status yang perlu disemak. Tekan
-                untuk lihat.
+                <strong>Notifikasi Permohonan</strong>
+                <span>Anda mempunyai permohonan yang memerlukan tindakan lanjut. Sila tekan bar ini untuk melihat
+                    butiran.</span>
+            </div>
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Tutup"></button>
+        </div>
+    @else
+        <div class="alert alert-info alert-dismissible fade show d-flex align-items-center" role="alert">
+            <i class="bi bi-info-circle-fill me-2"></i>
+            <div>
+                <strong>Notifikasi Permohonan</strong>
+                <span>Tiada notifikasi buat masa ini.</span>
             </div>
             <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Tutup"></button>
         </div>
@@ -222,42 +257,6 @@
             </div>
         </div>
     </div>
-
-    {{-- <!-- Activity Logs Section -->
-    <div class="card shadow rounded-4 p-4">
-        <h2 class="mb-4 text-center text-primary" style="color: #003366;">Log Aktiviti Terkini</h2>
-        <div class="table-responsive rounded-3"
-            style="max-height: 450px; overflow-y: auto; box-shadow: inset 0 0 10px #ddd;">
-            <table class="table table-bordered table-striped table-hover align-middle mb-0 rounded-3">
-                <thead class="table-primary text-center">
-                    <tr>
-                        <th scope="col" style="width: 180px;">Tarikh/Masa</th>
-                        <th scope="col">Pengguna</th>
-                        <th scope="col">Aktiviti</th>
-                        <th scope="col" style="width: 140px;">IP Address</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($aktiviti_terkini as $log)
-                        <tr>
-                            <td class="text-center" style="white-space: nowrap;">
-                                {{ str_replace(['AM', 'PM'], ['PG', 'PTG'], $log->created_at->translatedFormat('g:i A, d F Y')) }}
-                            </td>
-                            <td>{{ $log->user->name ?? 'Tidak Dikenali' }}</td>
-                            <td><span class="fw-semibold text-primary">{{ $log->activity }}</span></td>
-                            <td class="text-center">{{ $log->ip_address }}</td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="text-center text-muted fst-italic py-4">Tiada rekod aktiviti
-                                ditemui.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div> --}}
 
     <!-- Footer -->
     <footer class="footer-johor">

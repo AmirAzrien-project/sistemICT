@@ -64,18 +64,40 @@
                             <a class="nav-link nav-link-johor" href="{{ route('pengguna') }}">PENGGUNA</a>
                         </li>
                     @endif
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-johor" href="{{ route('permohonan.index') }}">PERMOHONAN</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link nav-link-johor dropdown-toggle" href="{{ route('permohonan.index') }}"
+                            id="permohonanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            PERMOHONAN
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="permohonanDropdown">
+                            <li>
+                                <a class="dropdown-item" href="{{ route('permohonan.index') }}">PERMOHONAN</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('permohonan.senarai') }}">SENARAI</a>
+                            </li>
+                            @if (in_array(auth()->user()->type, [2, 3, 4]))
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('pengurusan.index') }}">PENGURUSAN</a>
+                                </li>
+                            @endif
+                        </ul>
                     </li>
                     @if (in_array(auth()->user()->type, [2, 3, 4]))
-                        <li class="nav-item">
-                            <a class="nav-link nav-link-johor" href="{{ route('pengurusan.index') }}">PENGURUSAN</a>
-                        </li>
-                    @endif
-                    @if (in_array(auth()->user()->type, [2, 3, 4]))
-                        <li class="nav-item">
-                            <a class="nav-link nav-link-johor active"
-                                href="{{ route('mesyuarat.index') }}">MESYUARAT</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link nav-link-johor dropdown-toggle active"
+                                href="{{ route('mesyuarat.index') }}" id="mesyuaratDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                MESYUARAT
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="mesyuaratDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('mesyuarat.index') }}">MESYUARAT</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('mesyuarat.index') }}">PENGURUSAN</a>
+                                </li>
+                            </ul>
                         </li>
                     @endif
                 </ul>
@@ -101,43 +123,116 @@
     <!-- Main content -->
     <main class="container my-5">
         <div class="container">
-            <h1 class="mb-4">Senarai Permohonan Disyorkan untuk Mesyuarat</h1>
+            <h3 class="mb-4 fw-bold text-primary">Senarai Permohonan Disyorkan</h3>
 
             @if (session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
-            @if ($permohonanList->isEmpty())
-                <div class="alert alert-info">Tiada permohonan yang disyorkan untuk mesyuarat.</div>
-            @else
-                <table class="table table-bordered table-striped">
-                    <thead class="table-light">
+            <div class="alert alert-info d-flex align-items-center gap-2 mb-4" role="alert" style="font-size: 1rem;">
+                <i class="bi bi-info-circle-fill fs-4 text-primary"></i>
+                <div>
+                    <ul class="mb-0 ps-3">
+                        <li>Setiap permohonan <b>wajib melalui Mesyuarat Pertama sebelum Mesyuarat Kedua</b>. Sila
+                            pastikan urutan mesyuarat dipatuhi.</li>
+                        <li>Maklumat yang disimpan hendaklah <b>tepat dan lengkap</b> bagi mengelakkan sebarang masalah
+                            semakan atau kelulusan.</li>
+                        <li>Hanya permohonan yang telah lengkap kedua-dua mesyuarat dan mempunyai <b>No Sijil</b> akan
+                            dipaparkan status <span class="badge bg-success rounded-1">Selesai</span>.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <form method="GET" class="row g-2 align-items-end mb-3">
+                <div class="col-md-4">
+                    <input type="text" name="search_nama" value="{{ request('search_nama') }}"
+                        class="form-control" placeholder="Nama Mesyuarat">
+                </div>
+                <div class="col-md-4">
+                    <input type="text" name="search_jabatan" value="{{ request('search_jabatan') }}"
+                        class="form-control" placeholder="Jabatan">
+                </div>
+                <div class="col-md-3">
+                    <select name="sort_status" class="form-select" style="width:42%">
+                        <option value="">-- Pilih --</option>
+                        <option value="lulus" {{ request('sort_status') == 'lulus' ? 'selected' : '' }}>Selesai
+                            (Lulus)</option>
+                        <option value="belum" {{ request('sort_status') == 'belum' ? 'selected' : '' }}>Belum
+                            Selesai</option>
+                    </select>
+                </div>
+                <div class="col-md-1 d-flex gap-1">
+                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i></button>
+                    <a href="{{ route('mesyuarat.index') }}" class="btn btn-outline-secondary w-100" title="Reset">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </a>
+                </div>
+                {{-- <div class="col-md-1">
+                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i></button>
+                </div> --}}
+            </form>
+
+            <div class="table-responsive rounded shadow-sm">
+                <table class="table table-bordered align-middle table-hover">
+                    <thead class="table-primary">
                         <tr>
-                            <th>Bil</th>
-                            <th>Tarikh Disyorkan</th>
-                            <th>Skop</th>
-                            <th>Nama Projek</th>
-                            <th>Tindakan</th>
+                            {{-- <th style="width: 15%;">No Rujukan</th> --}}
+                            <th style="width: 20%;">Nama Projek</th>
+                            <th style="width: 20%;">Jabatan</th>
+                            <th style="width: 20%;">Mesyuarat JPICT</th>
+                            <th style="width: 20%;">Mesyuarat JPICT Negeri</th>
+                            <th style="width: 10%;">Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($permohonanList as $index => $permohonan)
+                        @forelse ($permohonans as $p)
                             <tr>
-                                <td>{{ $index + 1 }}</td>
-                                <td>{{ \Carbon\Carbon::parse($permohonan->updated_at)->format('d/m/Y H:i') }}</td>
-                                <td>{{ $permohonan->skop }}</td>
-                                <td>{{ $permohonan->tajuk }}</td>
-                                <td class="d-flex justify-content-center align-items-center gap-2">
-                                    <a href="{{ route('mesyuarat.step1', $permohonan->id) }}"
-                                        class="btn btn-sm btn-primary">Mesyuarat 1</a>
-                                    <a href="{{ route('mesyuarat.step2', $permohonan->id) }}"
-                                        class="btn btn-sm btn-secondary">Mesyuarat 2</a>
+                                {{-- <td style="text-align:left">{{ $p->no_rujukan }}</td> --}}
+                                <td class="align-middle">{{ $p->tajuk }}</td>
+                                <td class="align-middle">{{ $p->jabatan }}</td>
+                                <td class="align-middle text-center">
+                                    <a href="{{ route('mesyuarat.edit', ['permohonan_id' => $p->id, 'peringkat_mesyuarat' => 1]) }}"
+                                        class="btn btn-outline-primary rounded px-4 py-2 d-inline-flex align-items-center gap-2 shadow-sm"
+                                        style="font-weight: 500;">
+                                        Kemaskini
+                                    </a>
+                                </td>
+                                <td class="align-middle text-center">
+                                    @if ($p->mesy1_selesai)
+                                        <a href="{{ route('mesyuarat.edit', ['permohonan_id' => $p->id, 'peringkat_mesyuarat' => 2]) }}"
+                                            class="btn btn-outline-success rounded-1 px-4 py-2 d-inline-flex align-items-center gap-2 shadow-sm"
+                                            style="font-weight: 500;">
+                                            Kemaskini
+                                        </a>
+                                    @else
+                                        <button type="button"
+                                            class="btn btn-outline-secondary rounded-1 px-4 py-2 d-inline-flex align-items-center gap-2 shadow-sm"
+                                            disabled>
+                                            Kemaskini
+                                        </button>
+                                    @endif
+                                </td>
+                                <td class="align-middle text-center">
+                                    @if ($p->status_lulus == 'Lulus')
+                                        <span class="badge bg-success rounded-1 px-3 py-2">Selesai</span>
+                                    @else
+                                        <span class="badge bg-secondary rounded-1 px-3 py-2">Belum Selesai</span>
+                                    @endif
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    <i class="bi bi-info-circle me-2"></i>Tiada permohonan disyorkan.
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
-            @endif
+                <div class="d-flex justify-content-center mt-4">
+                    {{ $permohonans->withQueryString()->links('pagination::bootstrap-5') }}
+                </div>
+            </div>
         </div>
     </main>
 

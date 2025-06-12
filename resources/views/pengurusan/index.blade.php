@@ -65,13 +65,39 @@
                             <a class="nav-link nav-link-johor" href="{{ route('pengguna') }}">PENGGUNA</a>
                         </li>
                     @endif
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-johor" href="{{ route('permohonan.index') }}">PERMOHONAN</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link nav-link-johor dropdown-toggle active" href="{{ route('permohonan.index') }}"
+                            id="permohonanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            PERMOHONAN
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="permohonanDropdown">
+                            <li>
+                                <a class="dropdown-item" href="{{ route('permohonan.index') }}">PERMOHONAN</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('permohonan.senarai') }}">SENARAI</a>
+                            </li>
+                            @if (in_array(auth()->user()->type, [2, 3, 4]))
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('pengurusan.index') }}">PENGURUSAN</a>
+                                </li>
+                            @endif
+                        </ul>
                     </li>
                     @if (in_array(auth()->user()->type, [2, 3, 4]))
-                        <li class="nav-item">
-                            <a class="nav-link nav-link-johor active"
-                                href="{{ route('pengurusan.index') }}">PENGURUSAN</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link nav-link-johor dropdown-toggle" href="{{ route('mesyuarat.index') }}"
+                                id="mesyuaratDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                MESYUARAT
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="mesyuaratDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('mesyuarat.index') }}">MESYUARAT</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('mesyuarat.index') }}">PENGURUSAN</a>
+                                </li>
+                            </ul>
                         </li>
                     @endif
                 </ul>
@@ -107,69 +133,64 @@
             <h2 class="mb-4 text-primary fw-bold">Pengurusan Permohonan</h2>
 
             <!-- Improved Filter and Search Form -->
-            <div class="card shadow-sm mb-4 border-0">
-                <div class="card-body py-4">
-                    <form method="GET" action="{{ route('pengurusan.index') }}" class="row g-3 align-items-end">
+            <div class="card-body py-4">
+                <form method="GET" action="{{ route('pengurusan.index') }}" class="row g-3 align-items-end">
 
-                        <!-- Search Input -->
-                        <div class="col-12 col-md-4">
-                            <label for="search" class="form-label fw-semibold">Carian</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                                <input type="text" name="search" id="search" class="form-control"
-                                    placeholder="Carian..." value="{{ $search }}" style="height: 3.125rem">
-                            </div>
+                    <!-- Search Input -->
+                    <div class="col-12 col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                            <input type="text" name="search" id="search" class="form-control"
+                                placeholder="Carian..." value="{{ $search }}" style="height: 3.125rem">
                         </div>
+                    </div>
 
-                        <!-- Date Filter -->
-                        <div class="col-12 col-md-3">
-                            <label for="filter_date" class="form-label fw-semibold">Tarikh</label>
-                            <input type="date" name="filter_date" id="filter_date" class="form-control"
-                                value="{{ request('filter_date') }}">
-                        </div>
+                    <!-- Date Filter -->
+                    <div class="col-12 col-md-3">
+                        <input type="date" name="filter_date" id="filter_date" class="form-control"
+                            value="{{ request('filter_date') }}">
+                    </div>
 
-                        <!-- Skop Projek Filter -->
-                        <div class="col-12 col-md-3">
-                            <label for="filter_skop" class="form-label fw-semibold">Skop Projek</label>
-                            <select style="width: 85%" name="filter_skop" id="filter_skop" class="form-select">
-                                <option value="" disabled selected>-- Pilih Skop --</option>
-                                <option value="Pembangunan Sistem"
-                                    {{ request('filter_skop') == 'Pembangunan Sistem' ? 'selected' : '' }}>Pembangunan
-                                    Sistem</option>
-                                <option value="Perkakasan ICT"
-                                    {{ request('filter_skop') == 'Perkakasan ICT' ? 'selected' : '' }}>Perkakasan ICT
-                                </option>
-                                <option value="Perisian" {{ request('filter_skop') == 'Perisian' ? 'selected' : '' }}>
-                                    Perisian</option>
-                                <option value="Rangkaian dan Alatan Rangkaian"
-                                    {{ request('filter_skop') == 'Rangkaian dan Alatan Rangkaian' ? 'selected' : '' }}>
-                                    Rangkaian & Alatan Rangkaian</option>
-                                <option value="Perkhidmatan ICT"
-                                    {{ request('filter_skop') == 'Perkhidmatan ICT' ? 'selected' : '' }}>Perkhidmatan
-                                    ICT</option>
-                                <option value="Pengkomputeran Awan"
-                                    {{ request('filter_skop') == 'Pengkomputeran Awan' ? 'selected' : '' }}>
-                                    Pengkomputeran Awan</option>
-                                <option value="Lain-lain"
-                                    {{ request('filter_skop') == 'Lain-lain' ? 'selected' : '' }}>Lain-lain
-                                </option>
-                            </select>
-                        </div>
+                    <!-- Skop Projek Filter -->
+                    <div class="col-12 col-md-3">
+                        <select style="width: 85%" name="filter_skop" id="filter_skop" class="form-select">
+                            <option value="" disabled selected>-- Pilih Skop --</option>
+                            <option value="Pembangunan Sistem"
+                                {{ request('filter_skop') == 'Pembangunan Sistem' ? 'selected' : '' }}>Pembangunan
+                                Sistem</option>
+                            <option value="Perkakasan ICT"
+                                {{ request('filter_skop') == 'Perkakasan ICT' ? 'selected' : '' }}>Perkakasan ICT
+                            </option>
+                            <option value="Perisian" {{ request('filter_skop') == 'Perisian' ? 'selected' : '' }}>
+                                Perisian</option>
+                            <option value="Rangkaian dan Alatan Rangkaian"
+                                {{ request('filter_skop') == 'Rangkaian dan Alatan Rangkaian' ? 'selected' : '' }}>
+                                Rangkaian & Alatan Rangkaian</option>
+                            <option value="Perkhidmatan ICT"
+                                {{ request('filter_skop') == 'Perkhidmatan ICT' ? 'selected' : '' }}>Perkhidmatan
+                                ICT</option>
+                            <option value="Pengkomputeran Awan"
+                                {{ request('filter_skop') == 'Pengkomputeran Awan' ? 'selected' : '' }}>
+                                Pengkomputeran Awan</option>
+                            <option value="Lain-lain" {{ request('filter_skop') == 'Lain-lain' ? 'selected' : '' }}>
+                                Lain-lain
+                            </option>
+                        </select>
+                    </div>
 
-                        <!-- Action Buttons -->
-                        <div class="col-12 col-md-2 d-flex gap-2">
-                            <button type="submit"
-                                class="btn btn-primary w-auto fw-semibold d-flex align-items-center justify-content-center">
-                                <i class="bi bi-search me-2"></i> Cari
-                            </button>
-                            <a href="{{ route('pengurusan.index') }}"
-                                class="btn btn-outline-secondary w-auto d-flex align-items-center justify-content-center"
-                                title="Reset Filter">
-                                <i class="bi bi-arrow-clockwise"></i>
-                            </a>
-                        </div>
-                    </form>
-                </div>
+                    <!-- Action Buttons -->
+                    <div class="col-12 col-md-2 d-flex gap-2">
+                        <button type="submit"
+                            class="btn btn-primary w-auto fw-semibold d-flex align-items-center justify-content-center">
+                            <i class="bi bi-search me-2"></i> Cari
+                        </button>
+                        <a href="{{ route('pengurusan.index') }}"
+                            class="btn btn-outline-secondary w-auto d-flex align-items-center justify-content-center"
+                            title="Reset Filter">
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </a>
+                    </div>
+                </form>
             </div>
 
             <div class="table-responsive">
@@ -223,33 +244,12 @@
 
                 {{-- Pagination --}}
                 <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap gap-3">
-                    <div class="text-muted">
+                    {{-- <div class="text-muted">
                         Menunjukkan {{ $permohonan->firstItem() }} - {{ $permohonan->lastItem() }} daripada
-                        {{ $permohonan->total() }}
-                        rekod
-                    </div>
-                    <div class="d-flex gap-2">
-                        {{-- Previous --}}
-                        @if ($permohonan->onFirstPage())
-                            <span class="btn btn-outline-secondary disabled">
-                                <i class="fas fa-chevron-left me-2"></i>Sebelumnya
-                            </span>
-                        @else
-                            <a href="{{ $permohonan->previousPageUrl() }}" class="btn btn-outline-primary">
-                                <i class="fas fa-chevron-left me-2"></i>Sebelumnya
-                            </a>
-                        @endif
-
-                        {{-- Next --}}
-                        @if ($permohonan->hasMorePages())
-                            <a href="{{ $permohonan->nextPageUrl() }}" class="btn btn-outline-primary">
-                                Seterusnya <i class="fas fa-chevron-right ms-2"></i>
-                            </a>
-                        @else
-                            <span class="btn btn-outline-secondary disabled">
-                                Seterusnya <i class="fas fa-chevron-right ms-2"></i>
-                            </span>
-                        @endif
+                        {{ $permohonan->total() }} rekod
+                    </div> --}}
+                    <div>
+                        {{ $permohonan->onEachSide(1)->links('pagination::bootstrap-5') }}
                     </div>
                 </div>
             </div>

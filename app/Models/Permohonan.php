@@ -66,6 +66,7 @@ class Permohonan extends Model
 
     public function mesyuarat()
     {
+        // return $this->hasOne(Mesyuarat::class, 'permohonan_id');
         return $this->hasMany(Mesyuarat::class, 'permohonan_id');
     }
 }

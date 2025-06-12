@@ -8,40 +8,6 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class PdfController extends Controller
 {
-    // public function generatePdf(Request $request)
-    // {
-    //     // // Ambil semua input
-    //     // $data = $request->only([
-    //     //     'tajuk',
-    //     //     'nama',
-    //     //     'latar_belakang',
-    //     //     'kekangan',
-    //     //     'objektif',
-    //     //     'justifikasi',
-    //     //     'jumlah1',
-    //     //     'jumlah2',
-    //     //     'jumlah3',
-    //     //     'jumlah_akhir',
-    //     //     'nama_penyelaras',
-    //     //     'jawatan',
-    //     //     'gred_jawatan',
-    //     //     'notel',
-    //     //     'nofax',
-    //     //     'email',
-    //     //     'keputusan',
-    //     // ]);
-
-    //     $data = $request->all();
-    //     // $pdf = Pdf::loadView('pdf.form-template', ['data' => $data]);
-    //     $pdf = PDF::loadView('pdf.form-template', $data);
-
-    //     // return $pdf->stream('form-template.pdf');
-
-    //     return response($pdf->output(), 200)
-    //         ->header('Content-Type', 'application/pdf')
-    //         ->header('Content-Disposition', 'inline; filename="permohonan.pdf"');
-    // }
-
     public function generatePdf(Request $request)
     {
         $data = $request->all();
@@ -54,15 +20,12 @@ class PdfController extends Controller
         $data['jumlah2'] = isset($data['jumlah2']) ? (float) $data['jumlah2'] : 0;
         $data['jumlah3'] = isset($data['jumlah3']) ? (float) $data['jumlah3'] : 0;
         $data['tajuk'] = $data['tajuk'] ?? '';
-        $data['nama'] = $data['nama'] ?? '';
+        $data['jabatan'] = $data['jabatan'] ?? '';
         $data['tajuk_latar_belakang'] = $data['tajuk_latar_belakang'] ?? '';
-        $data['latar_belakang'] = $data['latar_belakang'] ?? '';
         $data['tajuk_kekangan'] = $data['tajuk_kekangan'] ?? '';
         // $data['kekangan'] = $data['kekangan'] ?? '';
         $data['tajuk_objektif'] = $data['tajuk_objektif'] ?? '';
-        $data['objektif'] = $data['objektif'] ?? '';
         $data['tajuk_justifikasi'] = $data['tajuk_justifikasi'] ?? '';
-        $data['justifikasi'] = $data['justifikasi'] ?? '';
         $data['nama_penyelaras'] = $data['nama_penyelaras'] ?? '';
         $data['jawatan'] = $data['jawatan'] ?? '';
         $data['gred_jawatan'] = $data['gred_jawatan'] ?? '';
@@ -71,12 +34,15 @@ class PdfController extends Controller
         $data['email'] = $data['email'] ?? '';
         $data['keputusan'] = $data['keputusan'] ?? '';
 
+        $sst_flag = $request->input('sst_flag', []);
+        $data['sst_flag'] = $sst_flag;
+
         // Hasilkan PDF
         $pdf = PDF::loadView('pdf.form-template', $data);
 
         return response($pdf->output(), 200)
             ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'inline; filename="permohonan.pdf"');
+            ->header('Content-Disposition', 'inline; filename="KERTASKERJA_ICTJOHOR.pdf"');
     }
 
     public function showForm()

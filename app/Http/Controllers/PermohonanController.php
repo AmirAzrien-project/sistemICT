@@ -18,6 +18,15 @@ class PermohonanController extends Controller
         return view('permohonan.index', compact('permohonans'));
     }
 
+    public function senarai()
+    {
+        $permohonans = Permohonan::where('id_pekerja', auth()->user()->id_pekerja)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('permohonan.senarai', compact('permohonans'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -38,8 +47,16 @@ class PermohonanController extends Controller
         $dokumenPaths = [];
         for ($i = 1; $i <= 5; $i++) {
             $file = $request->file("dokumen{$i}");
-            $filename = 'dokumen_' . $user->id_pekerja . '_' . time() . "_{$i}." . $file->getClientOriginalExtension();
-            $path = $file->storeAs('public/dokumen', $filename);
+            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+
+            // Sanitize: buang aksara pelik, tukar space ke underscore, dan hadkan panjang
+            $originalName = preg_replace('/[^A-Za-z0-9_\-]/', '_', $originalName);
+            $originalName = substr($originalName, 0, 100);
+
+            $ext = $file->getClientOriginalExtension();
+            $tarikh = date('j-n-Y');
+            $filename = $originalName . '_(' . $tarikh . ")_{$i}." . $ext;
+            $file->storeAs('public/dokumen', $filename);
             $dokumenPaths["dokumen{$i}"] = $filename; // hanya simpan nama fail
         }
 
@@ -108,8 +125,15 @@ class PermohonanController extends Controller
                 }
 
                 $file = $request->file($fileInput);
-                // $namaFail = time() . "_dokumen{$i}_" . $file->getClientOriginalName();
-                $namaFail = 'dokumen_' . auth()->user()->id_pekerja . '_' . time() . "_{$i}." . $file->getClientOriginalExtension();
+                $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+
+                // Sanitize: buang aksara pelik, tukar space ke underscore, dan hadkan panjang
+                $originalName = preg_replace('/[^A-Za-z0-9_\-]/', '_', $originalName);
+                $originalName = substr($originalName, 0, 100);
+
+                $ext = $file->getClientOriginalExtension();
+                $tarikh = date('j-n-Y');
+                $namaFail = $originalName . '_(' . $tarikh . ")_{$i}." . $ext;
                 $file->storeAs('dokumen', $namaFail, 'public');
 
                 $permohonan->$fileInput = $namaFail;
@@ -118,6 +142,6 @@ class PermohonanController extends Controller
 
         // $permohonan->save();
 
-        return redirect()->route('permohonan.index')->with('success', 'Permohonan telah dikemaskini.');
+        return redirect()->route('permohonan.senarai')->with('success', 'Permohonan telah dikemaskini.');
     }
 }

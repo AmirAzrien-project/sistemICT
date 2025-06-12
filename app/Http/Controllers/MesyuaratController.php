@@ -3,83 +3,180 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
-use App\Models\Permohonan;
 use App\Models\Mesyuarat;
+use App\Models\Permohonan;
 
 class MesyuaratController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $permohonanList = Permohonan::where('status_sekretariat', 'Disyorkan')
-            ->orderBy('updated_at', 'desc')
-            ->get();
+        $permohonans = DB::table('permohonan')
+            ->whereRaw("LOWER(TRIM(status_sekretariat)) = 'disyorkan'");
 
-        return view('mesyuarat.index', compact('permohonanList'));
+        // Filter Nama Mesyuarat
+        if ($request->search_nama) {
+            $permohonans->where('tajuk', 'like', '%' . $request->search_nama . '%');
+        }
+
+        // Filter Jabatan
+        if ($request->search_jabatan) {
+            $permohonans->where('jabatan', 'like', '%' . $request->search_jabatan . '%');
+        }
+
+        // Ambil semua data dahulu
+        $permohonans = $permohonans->get();
+
+        // Tambah info mesy1_selesai & status_lulus
+        foreach ($permohonans as $p) {
+            $mesy1 = DB::table('mesyuarat')
+                ->where('permohonan_id', $p->id)
+                ->where('peringkat_mesyuarat', 1)
+                ->whereIn('keputusan', ['Disyorkan'])
+                ->first();
+
+            $p->mesy1_selesai = $mesy1 ? true : false;
+
+            $mesy2 = DB::table('mesyuarat')
+                ->where('permohonan_id', $p->id)
+                ->where('peringkat_mesyuarat', 2)
+                ->where('keputusan', 'Lulus')
+                ->whereNotNull('no_sijil')
+                ->where('no_sijil', '!=', '')
+                ->first();
+
+            $p->status_lulus = $mesy2 ? 'Lulus' : '';
+        }
+
+        // Sorting by status (collection)
+        if ($request->sort_status == 'lulus') {
+            $permohonans = $permohonans->sortByDesc(function ($item) {
+                return $item->status_lulus == 'Lulus' ? 1 : 0;
+            })->values();
+        } elseif ($request->sort_status == 'belum') {
+            $permohonans = $permohonans->sortBy(function ($item) {
+                return $item->status_lulus == 'Lulus' ? 1 : 0;
+            })->values();
+        }
+
+        // Manual pagination
+        $page = $request->get('page', 1);
+        $perPage = 10;
+        $total = $permohonans->count();
+        $results = $permohonans->slice(($page - 1) * $perPage, $perPage)->values();
+
+        $paginated = new \Illuminate\Pagination\LengthAwarePaginator(
+            $results,
+            $total,
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        return view('mesyuarat.index', ['permohonans' => $paginated]);
     }
 
-    // Mesyuarat 1
-    public function showStep1Form($permohonanId)
-    {
-        $permohonan = Permohonan::findOrFail($permohonanId);
-        return view('mesyuarat.step1', compact('permohonan'));
-    }
 
-    public function submitStep1(Request $request, $permohonanId)
+    // Function Store Mesyuarat
+    public function store(Request $request)
     {
-        $request->validate([
-            'nama_mesyuarat' => 'required|string',
-            'nilai_projek' => 'required|numeric',
-            'kelulusan' => 'required|string',
-            'tarikh_masa' => 'required|date',
-        ]);
-
-        Mesyuarat::create([
-            'permohonan_id' => $permohonanId,
-            'nama_mesyuarat' => $request->nama_mesyuarat,
+        $data = [
+            'permohonan_id' => $request->permohonan_id,
+            'no_rujukan' => $request->no_rujukan,
+            'peringkat_mesyuarat' => $request->peringkat_mesyuarat,
+            'tajuk' => $request->tajuk,
             'nilai_projek' => $request->nilai_projek,
-            'kelulusan' => $request->kelulusan,
+            'keputusan' => $request->keputusan,
             'tarikh_masa' => $request->tarikh_masa,
-        ]);
+        ];
 
-        $permohonan = Permohonan::findOrFail($permohonanId);
-        $permohonan->status_sekretariat = 'Mesyuarat Pertama';
-        $permohonan->save();
+        // For Mesyuarat 2, include no_sijil
+        if ($request->peringkat_mesyuarat == 2 && $request->keputusan == 'Lulus') {
+            $data['no_sijil'] = $this->generateNoSijil($request);
+        }
 
-        return redirect()->route('mesyuarat.index')->with('success', 'Maklumat mesyuarat pertama disimpan.');
+        // Check if record already exists
+        $existing = DB::table('mesyuarat')
+            ->where('permohonan_id', $request->permohonan_id)
+            ->where('peringkat_mesyuarat', $request->peringkat_mesyuarat)
+            ->first();
+
+        if ($existing) {
+            // Update existing record
+            DB::table('mesyuarat')
+                ->where('id', $existing->id)
+                ->update($data);
+
+            $peringkat = $request->peringkat_mesyuarat == 1 ? 'Pertama' : 'Kedua';
+            $tarikh = $existing->tarikh_masa
+                ? date('d/m/Y H:i', strtotime($existing->tarikh_masa))
+                : '-';
+
+            // Gabung mesej berjaya & makluman dalam satu session
+            return redirect()->back()->with(
+                'success',
+                "Maklumat Mesyuarat berjaya disimpan. Makluman: Data terakhir dikemaskini pada $tarikh."
+            );
+        } else {
+            // Insert new record
+            DB::table('mesyuarat')->insert($data);
+            return redirect()->back()->with('success', 'Maklumat mesyuarat telah disimpan.');
+        }
     }
 
-    //Mesyuarat 2
-    public function showStep2Form($permohonanId)
+
+    // Function Edit Mesyuarat
+    public function edit($permohonan_id, $peringkat_mesyuarat)
     {
-        $permohonan = Permohonan::findOrFail($permohonanId);
-        return view('mesyuarat.step2', compact('permohonan'));
+        $permohonan = Permohonan::find($permohonan_id);
+
+        if (!$permohonan) {
+            abort(404, 'Permohonan tidak dijumpai.');
+        }
+
+        $mesyuarat = Mesyuarat::where('permohonan_id', $permohonan_id)
+            ->where('peringkat_mesyuarat', $peringkat_mesyuarat)
+            ->first();
+
+        // Ambil nilai_projek dari mesyuarat 1 jika mesyuarat 2 dan tiada nilai_projek
+        $nilai_projek_mesy1 = null;
+        if ($peringkat_mesyuarat == 2) {
+            $mesy1 = Mesyuarat::where('permohonan_id', $permohonan_id)
+                ->where('peringkat_mesyuarat', 1)
+                ->first();
+            $nilai_projek_mesy1 = $mesy1 ? $mesy1->nilai_projek : null;
+        }
+
+        return view('mesyuarat.edit', compact('permohonan', 'mesyuarat', 'peringkat_mesyuarat', 'nilai_projek_mesy1'));
     }
 
-    public function submitStep2(Request $request, $permohonanId)
+
+    // Generate No Sijil
+    protected function generateNoSijil(Request $request)
     {
-        $request->validate([
-            'nama_mesyuarat' => 'required|string',
-            'nilai_projek' => 'required|numeric',
-            'kelulusan' => 'required|string',
-            'tarikh_masa' => 'required|date',
-            'no_sijil' => 'required|string',
-        ]);
+        $tahun = date('Y'); // tahun semasa
 
-        Mesyuarat::create([
-            'permohonan_id' => $permohonanId,
-            'nama_mesyuarat' => $request->nama_mesyuarat,
-            'nilai_projek' => $request->nilai_projek,
-            'kelulusan' => $request->kelulusan,
-            'tarikh_masa' => $request->tarikh_masa,
-            'no_sijil' => $request->no_sijil,
-        ]);
+        // Contoh: dapatkan bilangan mesyuarat 2 tahun ni dari DB (bil-tahun)
+        $bilTahunan = DB::table('mesyuarat')
+            ->where('peringkat_mesyuarat', 2)
+            ->whereYear('tarikh_masa', $tahun)
+            ->count() + 1;
 
-        // Kemaskini status permohonan
-        $permohonan = Permohonan::findOrFail($permohonanId);
-        $permohonan->status_sekretariat = $request->kelulusan;
-        $permohonan->save();
+        // Skop dari permohonan (anda perlu sesuaikan ikut data permohonan)
+        $permohonan = Permohonan::find($request->permohonan_id);
+        $skop = $permohonan ? $permohonan->skop : 'SKOP'; // gantikan 'skop' ikut nama kolum sebenar
 
-        return redirect()->route('mesyuarat.index')->with('success', 'Maklumat Mesyuarat 2 telah disimpan.');
+        // Format no sijil
+        $noSijil = sprintf(
+            "%s/JPICT(%02d-%s)/%s/%03d",
+            $tahun,
+            $bilTahunan,
+            $tahun,
+            strtoupper(str_replace(' ', '', $skop)),
+            $bilTahunan
+        );
+
+        return $noSijil;
     }
 }

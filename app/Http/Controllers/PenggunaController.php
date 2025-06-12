@@ -14,7 +14,6 @@ class PenggunaController extends Controller
         $search = $request->query('search');
         $typeFilter = $request->query('type'); // terima dari URL query
         $query = User::query();
-        //$query = User::orderBy('name', 'asc');
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -37,12 +36,11 @@ class PenggunaController extends Controller
             } elseif ($sort == 'name_desc') {
                 $query->orderBy('name', 'desc');
             }
+        } else {
+            // Default: sort by name ascending
+            $query->orderBy('name', 'asc');
         }
 
-        // Get the users with pagination
-        // $users = $query->paginate(10);
-        // $users = $query->withQueryString()->paginate(10);
-        // $users = $query->paginate(10)->withQueryString();
         $users = $query->paginate(10)->appends($request->query());
 
         return view('pengguna.pengguna', compact('users'));
@@ -60,23 +58,36 @@ class PenggunaController extends Controller
             'name' => 'required|string|max:255',
             'notel' => 'required|string|max:15',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+                'regex:/[a-z]/',      // mesti ada huruf kecil
+                'regex:/[A-Z]/',      // mesti ada huruf besar
+                'regex:/[0-9]/',      // mesti ada nombor
+                'regex:/[\W_]/',      // mesti ada simbol
+            ],
             'type' => 'required|integer|in:1,2,3,4',
             'jawatan' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
+        ],
+        [
+            'password.regex' => 'Kata laluan mesti sekurang-kurangnya 8 aksara, mengandungi huruf besar, huruf kecil, nombor dan simbol.',
         ]);
 
         // dd('Validated type: ' . $validated['type']);
 
         // Create the new user
         $user = new User();
-        $user->name = $validated['name'];
+        $user->name = ucwords(strtolower($validated['name']));
         $user->notel = $validated['notel'];
         $user->email = $validated['email'];
         $user->password = Hash::make($validated['password']);
         $user->type = $validated['type'];
-        $user->jawatan = $validated['jawatan'];
+        $user->jawatan = ucwords(strtolower($validated['jawatan']));
         $user->jabatan = $validated['jabatan'];
+
         $user->id_pekerja = $user->generateIdPekerja($user->type);
 
         $user->save();

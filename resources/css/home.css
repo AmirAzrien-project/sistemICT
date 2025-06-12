@@ -7,6 +7,10 @@ body {
     flex-direction: column;
 }
 
+html {
+    overflow-y: scroll;
+}
+
 /* Header Styles */
 .johor-header, .header-bar {
     background: rgb(255 255 255 / 98%);
@@ -41,7 +45,9 @@ body {
 }
 
 .btn-johor:hover {
-    background: #fff;
+    background: lightblue;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgb(0 51 102 / 20%);
 }
 
 .btn-tambah {
@@ -81,7 +87,7 @@ body {
     max-width: 900px;
     backdrop-filter: blur(8px);
     border: 1px solid rgb(0 51 102 / 15%);
-    animation: fadeInUp 0.7s ease forwards;
+    animation: fade-in-up 0.7s ease forwards;
 }
 
 /* User Info Header */
@@ -149,7 +155,7 @@ body {
     flex-grow: 1;
     font-size: 1.05rem;
     color: #212529;
-    word-break: break-word;
+    word-break: break-all;
 }
 
 /* Badges */
@@ -310,7 +316,7 @@ thead.table-primary {
 }
 
 /* Animations */
-@keyframes fadeInUp {
+@keyframes fade-in-up {
     from {
         opacity: 0;
         transform: translateY(20px);
@@ -589,13 +595,6 @@ h1, h2, h4 {
     box-shadow: 0 8px 28px rgb(0 51 102 / 12%) !important;
 }
 
-/* Enhanced Button States */
-.btn-johor:hover {
-    background: lightblue;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgb(0 51 102 / 20%);
-}
-
 .btn-johordua {
     background: #fff;
     color: #036;
@@ -614,9 +613,4 @@ form .form-control.is-invalid {
     background-repeat: no-repeat;
     background-position: right calc(0.375em + 0.1875rem) center;
     background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
-}
-
-/* Final loading overlay fallback */
-#loading-overlay .loading-text {
-    animation: pulse 1.2s infinite;
 }

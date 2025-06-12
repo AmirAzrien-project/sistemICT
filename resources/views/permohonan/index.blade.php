@@ -64,17 +64,39 @@
                             <a class="nav-link nav-link-johor" href="{{ route('pengguna') }}">PENGGUNA</a>
                         </li>
                     @endif
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-johor active" href="{{ route('permohonan.index') }}">PERMOHONAN</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link nav-link-johor dropdown-toggle active" href="{{ route('permohonan.index') }}"
+                            id="permohonanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            PERMOHONAN
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="permohonanDropdown">
+                            <li>
+                                <a class="dropdown-item" href="{{ route('permohonan.index') }}">PERMOHONAN</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('permohonan.senarai') }}">SENARAI</a>
+                            </li>
+                            @if (in_array(auth()->user()->type, [2, 3, 4]))
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('pengurusan.index') }}">PENGURUSAN</a>
+                                </li>
+                            @endif
+                        </ul>
                     </li>
                     @if (in_array(auth()->user()->type, [2, 3, 4]))
-                        <li class="nav-item">
-                            <a class="nav-link nav-link-johor" href="{{ route('pengurusan.index') }}">PENGURUSAN</a>
-                        </li>
-                    @endif
-                    @if (in_array(auth()->user()->type, [2, 3, 4]))
-                        <li class="nav-item">
-                            <a class="nav-link nav-link-johor" href="{{ route('mesyuarat.index') }}">MESYUARAT</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link nav-link-johor dropdown-toggle" href="{{ route('mesyuarat.index') }}"
+                                id="mesyuaratDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                MESYUARAT
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="mesyuaratDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('mesyuarat.index') }}">MESYUARAT</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('mesyuarat.index') }}">PENGURUSAN</a>
+                                </li>
+                            </ul>
                         </li>
                     @endif
                 </ul>
@@ -182,11 +204,30 @@
                             fail: 10MB.</span>
                     </p>
 
+                    <div class="alert d-flex align-items-center mb-4 py-3 px-4 shadow-sm" role="alert"
+                        style="background: #fff8e1; border-left: 6px solid #ffc107; border-radius: 0.5rem; font-size:1.08rem; box-shadow: 0 2px 8px rgba(255,193,7,0.08);">
+                        <i class="bi bi-exclamation-triangle-fill flex-shrink-0 me-3"
+                            style="font-size:2.1rem; color:#ff9800;"></i>
+                        <div>
+                            <strong style="color:#b26a00; font-size:1.1rem;">PERINGATAN:</strong>
+                            <span class="ms-1" style="color:#6d4c00;">
+                                Sila <b>generate &amp; muat naik <u>Dokumen 4: Kertas Kerja</u></b> dahulu sebelum
+                                muat naik dokumen lain.<br>
+                                <a href="{{ route('permohonan.tambah') }}"
+                                    class="btn btn-warning btn-sm ms-2 mt-2 fw-semibold" style="border-radius:0.4rem;"
+                                    target="_blank" rel="noopener noreferrer">
+                                    <i class="bi bi-file-earmark-plus"></i> Generate Dokumen 4
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+
                     @php
                         $dokumenList = [
                             1 => 'Senarai Semak Permohonan Kelulusan Teknikal Projek Teknologi Maklumat dan Komunikasi (ICT) Kerajaan Negeri Johor',
                             2 => 'Borang Permohonan Kelulusan Teknikal Projek ICT',
                             3 => 'Cabutan Minit Mesyuarat JPICT Jabatan (berkenaan kelulusan permohonan projek)',
+                            4 => 'Kertas Kerja Permohonan Kelulusan Teknikal Projek ICT',
                             5 => 'Slaid Permohonan Kelulusan Teknikal Projek ICT',
                         ];
                     @endphp
@@ -208,217 +249,6 @@
 
                 <button type="submit" class="btn btn-primary px-4 fw-semibold">Hantar Permohonan</button>
             </form>
-            <br>
-            <a href="{{ route('permohonan.tambah') }}" class="btn btn-primary px-4 fw-semibold">
-                Isi Dokumen 4 : Kertas Kerja
-            </a>
-        </div>
-
-        <!-- Applications List Card -->
-        <div class="card shadow-sm rounded-4 p-4">
-            <h4 class="mb-4 fw-bold" style="color: #003366;">Senarai Permohonan Saya</h4>
-
-            <div class="table-responsive rounded-3">
-                <table class="table table-bordered align-middle mb-0">
-                    <thead class="table-light text-center">
-                        <tr>
-                            <th scope="col" style="width: 180px;">Tarikh</th>
-                            <th scope="col">Skop Projek</th>
-                            <th scope="col">Nama Projek</th>
-                            <th scope="col" style="width: 140px;">Status</th>
-                            <th scope="col" style="width: 120px;">Tindakan</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($permohonans as $permohonan)
-                            <tr>
-                                <td class="text-center">{{ $permohonan->created_at->format('d/m/Y') }}</td>
-                                <td style="text-align: ">{{ $permohonan->skop }}</td>
-                                <td style="text-align: left">{{ $permohonan->tajuk }}</td>
-                                <td class="text-center">
-                                    @php
-                                        $status = $permohonan->status_sekretariat ?? 'Dalam Proses';
-
-                                        // Define badge classes and icons for each status
-                                        $statusMap = [
-                                            'Lengkap' => [
-                                                'class' => 'bg-success text-white',
-                                                'icon' => 'check-circle-fill',
-                                            ],
-                                            'Tidak Lengkap' => [
-                                                'class' => 'bg-danger text-white',
-                                                'icon' => 'x-circle-fill',
-                                            ],
-                                            'Perlu Semakan Semula' => [
-                                                'class' => 'bg-secondary text-white',
-                                                'icon' => 'exclamation-triangle-fill',
-                                            ],
-                                            'Disyorkan' => [
-                                                'class' => 'bg-primary text-white',
-                                                'icon' => 'star-fill',
-                                            ],
-                                            'Menunggu' => [
-                                                'class' => 'bg-light text-dark',
-                                                'icon' => 'hourglass-split',
-                                            ],
-                                            'Telah Dikemaskini' => [
-                                                'class' => 'bg-info text-white',
-                                                'icon' => 'arrow-clockwise',
-                                            ],
-                                        ];
-
-                                        // Fallback if status not in map
-                                        $badgeClass = $statusMap[$status]['class'] ?? 'bg-light text-dark';
-                                        $icon = $statusMap[$status]['icon'] ?? 'question-circle-fill';
-                                    @endphp
-
-                                    <span
-                                        class="badge rounded-pill {{ $badgeClass }} px-3 py-2 fs-6 d-inline-flex align-items-center gap-1 shadow-sm"
-                                        data-bs-toggle="tooltip" data-bs-placement="top"
-                                        title="{{ $status }}">
-                                        <i class="bi bi-{{ $icon }}" aria-hidden="true"></i>
-                                        {{ $status }}
-                                    </span>
-                                </td>
-                                <td class="text-center">
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <button type="button"
-                                            class="btn btn-info btn-sm d-flex align-items-center gap-1"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#keteranganModal{{ $permohonan->id }}"
-                                            aria-label="Lihat keterangan permohonan">
-                                            <i class="bi bi-eye"></i> Lihat
-                                        </button>
-
-                                        <a href="{{ route('permohonan.edit', $permohonan->id) }}"
-                                            class="btn btn-warning btn-sm d-flex align-items-center gap-1">
-                                            <i class="bi bi-pencil-square"></i> Kemaskini
-                                        </a>
-
-                                    </div>
-                                </td>
-
-                            </tr>
-
-                            <!-- Modal -->
-                            <div class="modal fade" id="keteranganModal{{ $permohonan->id }}" tabindex="-1"
-                                aria-labelledby="keteranganModalLabel{{ $permohonan->id }}" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content rounded-4 shadow">
-                                        <div class="modal-header bg-primary text-white rounded-top-4">
-                                            <h5 class="modal-title" id="keteranganModalLabel{{ $permohonan->id }}">
-                                                Keterangan Permohonan
-                                            </h5>
-                                            <button type="button" class="btn-close btn-close-white"
-                                                data-bs-dismiss="modal" aria-label="Tutup"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p class="mb-0">
-                                                {{ $permohonan->keterangan ?? 'Tiada keterangan diberikan.' }}
-                                            </p>
-
-                                            <div class="mt-4">
-                                                <strong class="fs-5 mb-2 d-block">Dokumen yang dimuat naik:</strong>
-                                                <ul class="list-group">
-                                                    @php
-                                                        $dokumenNames = [
-                                                            'Senarai Semak Permohonan Kelulusan Teknikal Projek Teknologi Maklumat dan Komunikasi (ICT) Kerajaan Negeri Johor',
-                                                            'Borang Permohonan Kelulusan Teknikal Projek ICT',
-                                                            'Cabutan Minit Mesyuarat JPICT Jabatan (berkenaan kelulusan permohonan projek)',
-                                                            'Kertas Kerja Permohonan Kelulusan Teknikal Projek ICT',
-                                                            'Slaid Permohonan Kelulusan Teknikal Projek ICT',
-                                                        ];
-                                                        $dokumenIcons = [
-                                                            'bi bi-list-check', // Checklist icon
-                                                            'bi bi-file-earmark-text', // Form icon
-                                                            'bi bi-journal-text', // Minutes icon
-                                                            'bi bi-file-earmark-richtext', // Paper icon
-                                                            'bi bi-file-earmark-slides', // Slides icon
-                                                        ];
-                                                        $adaDokumen = false;
-                                                    @endphp
-
-                                                    @for ($i = 1; $i <= 5; $i++)
-                                                        @php
-                                                            $dokumen = $permohonan->{'dokumen' . $i};
-                                                        @endphp
-                                                        @if ($dokumen)
-                                                            @php $adaDokumen = true; @endphp
-                                                            <li class="list-group-item d-flex align-items-center">
-                                                                <i
-                                                                    class="{{ $dokumenIcons[$i - 1] }} text-primary me-2 fs-5">
-                                                                </i>
-                                                                <a href="{{ asset('storage/dokumen/' . $dokumen) }}"
-                                                                    target="_blank"
-                                                                    class="flex-grow-1 text-decoration-none text-dark fw-semibold">
-                                                                    {{ $dokumenNames[$i - 1] }}
-                                                                </a>
-                                                            </li>
-                                                        @endif
-                                                    @endfor
-
-                                                    @unless ($adaDokumen)
-                                                        <li class="list-group-item text-muted fst-italic">
-                                                            <i class="bi bi-info-circle me-2"></i>
-                                                            Tiada dokumen dimuat naik.
-                                                        </li>
-                                                    @endunless
-                                                </ul>
-                                            </div>
-
-                                        </div>
-
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                Tutup
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        @empty
-                            <tr>
-                                <td colspan="4" class="text-center text-muted fst-italic py-4">
-                                    Tiada permohonan direkodkan.
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-
-                {{-- Pagination --}}
-                <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap gap-3">
-                    <div class="text-muted">
-                        Menunjukkan {{ $permohonans->firstItem() }} - {{ $permohonans->lastItem() }} daripada
-                        {{ $permohonans->total() }} rekod
-                    </div>
-                    <div class="d-flex gap-2">
-                        {{-- Previous --}}
-                        @if ($permohonans->onFirstPage())
-                            <span class="btn btn-outline-secondary disabled">
-                                <i class="fas fa-chevron-left me-2"></i>Sebelumnya
-                            </span>
-                        @else
-                            <a href="{{ $permohonans->previousPageUrl() }}" class="btn btn-outline-primary">
-                                <i class="fas fa-chevron-left me-2"></i>Sebelumnya
-                            </a>
-                        @endif
-
-                        {{-- Next --}}
-                        @if ($permohonans->hasMorePages())
-                            <a href="{{ $permohonans->nextPageUrl() }}" class="btn btn-outline-primary">
-                                Seterusnya <i class="fas fa-chevron-right ms-2"></i>
-                            </a>
-                        @else
-                            <span class="btn btn-outline-secondary disabled">
-                                Seterusnya <i class="fas fa-chevron-right ms-2"></i>
-                            </span>
-                        @endif
-                    </div>
-                </div>
-
-            </div>
         </div>
     </main>
 
@@ -586,6 +416,40 @@
             }
         });
     </script>
+
+<script>
+window.addEventListener('pageshow', function(event) {
+    // Hanya clear input yang BUKAN readonly dan BUKAN disabled
+    if (event.persisted || performance.getEntriesByType("navigation")[0]?.type === "back_forward") {
+        const form = document.getElementById('permohonanForm');
+        if (form) {
+            // Senarai ID input yang user kena isi sendiri
+            const manualInputIds = [
+                'skop', 'tajuk', 'keterangan'
+                // tambah ID lain jika ada
+            ];
+
+            manualInputIds.forEach(function(id) {
+                const el = document.getElementById(id);
+                if (el) {
+                    if (el.tagName === 'SELECT') {
+                        el.selectedIndex = 0;
+                    } else if (el.tagName === 'TEXTAREA') {
+                        el.value = '';
+                    } else {
+                        el.value = '';
+                    }
+                }
+            });
+
+            // Clear semua file input
+            form.querySelectorAll('input[type="file"]').forEach(function(fileInput) {
+                fileInput.value = '';
+            });
+        }
+    }
+});
+</script>
 
 </body>
 

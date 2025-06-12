@@ -64,17 +64,39 @@
                             <a class="nav-link nav-link-johor" href="{{ route('pengguna') }}">PENGGUNA</a>
                         </li>
                     @endif
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-johor" href="{{ route('permohonan.index') }}">PERMOHONAN</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link nav-link-johor dropdown-toggle active" href="{{ route('permohonan.index') }}"
+                            id="permohonanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            PERMOHONAN
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="permohonanDropdown">
+                            <li>
+                                <a class="dropdown-item" href="{{ route('permohonan.index') }}">PERMOHONAN</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('permohonan.senarai') }}">SENARAI</a>
+                            </li>
+                            @if (in_array(auth()->user()->type, [2, 3, 4]))
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('pengurusan.index') }}">PENGURUSAN</a>
+                                </li>
+                            @endif
+                        </ul>
                     </li>
                     @if (in_array(auth()->user()->type, [2, 3, 4]))
-                        <li class="nav-item">
-                            <a class="nav-link nav-link-johor" href="{{ route('pengurusan.index') }}">PENGURUSAN</a>
-                        </li>
-                    @endif
-                    @if (in_array(auth()->user()->type, [2, 3, 4]))
-                        <li class="nav-item">
-                            <a class="nav-link nav-link-johor" href="{{ route('mesyuarat.index') }}">MESYUARAT</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link nav-link-johor dropdown-toggle" href="{{ route('mesyuarat.index') }}"
+                                id="mesyuaratDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                MESYUARAT
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="mesyuaratDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('mesyuarat.index') }}">MESYUARAT</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('mesyuarat.index') }}">PENGURUSAN</a>
+                                </li>
+                            </ul>
                         </li>
                     @endif
                 </ul>
@@ -108,8 +130,9 @@
         @endif
 
         <div class="container py-5">
-            <h2 class="mb-4 text-primary">Kemaskini Permohonan</h2>
-
+            <h2 class="mb-4 text-primary">
+                Kemaskini Permohonan: <span class="fw-normal text-dark">{{ $selectedPermohonan->tajuk }}</span>
+            </h2>
             <form action="{{ route('permohonan.update', $selectedPermohonan->id) }}" method="POST"
                 enctype="multipart/form-data">
                 @csrf
@@ -135,10 +158,21 @@
                 <hr>
                 <h5>Dokumen Sokongan</h5>
 
+                @php
+                    $dokumenTitles = [
+                        1 => 'Senarai Semak Permohonan Kelulusan Teknikal Projek Teknologi Maklumat dan Komunikasi (ICT) Kerajaan Negeri Johor',
+                        2 => 'Borang Permohonan Kelulusan Teknikal Projek ICT',
+                        3 => 'Cabutan Minit Mesyuarat JPICT Jabatan (berkenaan kelulusan permohonan projek)',
+                        4 => 'Kertas Kerja Permohonan Kelulusan Teknikal Projek ICT',
+                        5 => 'Slaid Permohonan Kelulusan Teknikal Projek ICT',
+                    ];
+                @endphp
+
                 @for ($i = 1; $i <= 5; $i++)
                     <div class="mb-3">
-                        <label for="dokumen{{ $i }}" class="form-label">Dokumen
-                            {{ $i }}</label><br>
+                        <label for="dokumen{{ $i }}" class="form-label">
+                            Dokumen {{ $i }}: {{ $dokumenTitles[$i] ?? '' }}<br>
+                        </label><br>
                         @php
                             $dokumen = 'dokumen' . $i;
                             $failSediaAda = $selectedPermohonan->$dokumen;
@@ -157,7 +191,7 @@
                 @endfor
 
                 <button type="submit" class="btn btn-primary">Kemaskini Permohonan</button>
-                <a href="{{ route('permohonan.index') }}" class="btn btn-secondary ms-2">Kembali</a>
+                <a href="{{ route('permohonan.senarai') }}" class="btn btn-secondary ms-2">Kembali</a>
             </form>
         </div>
 
