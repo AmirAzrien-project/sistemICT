@@ -106,6 +106,20 @@
             <div class="dropdown">
                 <button class="btn btn-johor dropdown-toggle" type="button" data-bs-toggle="dropdown">
                     {{ Auth::user()->name }}
+                    {{-- 
+                    @php
+                        $type = Auth::user()->type;
+                        $typeLabel = match ($type) {
+                            1 => 'Pengguna Umum',
+                            2 => 'Sekretariat',
+                            3 => 'Admin Jabatan',
+                            4 => 'Super Admin',
+                            default => 'Pengguna',
+                        };
+                    @endphp
+
+                    {{ Auth::user()->name }} <br> <span class="text-muted"
+                        style="font-size:0.95em">{{ $typeLabel }}</span> --}}
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li><a class="dropdown-item" href="{{ route('profile.edit') }}">PROFIL</a></li>
@@ -210,7 +224,12 @@
                         @foreach ($permohonan as $index => $item)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
-                                <td>{{ $item->created_at->format('d/m/Y') }}</td>
+                                <td>
+                                    {{ $item->created_at->format('d/m/Y') }}<br>
+                                    <span class="text-muted" style="font-size:0.95em">
+                                        {{ $item->created_at->format('h:i A') }}
+                                    </span>
+                                </td>
                                 <td>{{ $item->skop }}</td>
                                 <td style="text-align: left">{{ $item->tajuk }}</td>
                                 <td>{{ $item->jabatan }}</td>

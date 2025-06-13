@@ -169,7 +169,8 @@
 
     <br><br><br><br>
 
-    <p style="text-align: center; font-size:20px">{{ $jabatan }}</p>
+    <p style="text-align: center; font-size:20px">{!! str_replace(',', '<br>', $jabatan) !!}</p>
+    {{-- <p style="text-align: center; font-size:20px">{{ $jabatan }}</p> --}}
 
     <br>
 

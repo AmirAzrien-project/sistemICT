@@ -169,6 +169,9 @@
                             Tarikh Mohon</span>
                         <div class="fs-6 text-dark border rounded-3 p-2 bg-light">
                             {{ \Carbon\Carbon::parse($permohonan->created_at)->translatedFormat('j F Y') }}
+                            <span class="text-muted ms-2" style="font-size:0.95em">
+                                {{ \Carbon\Carbon::parse($permohonan->created_at)->format('h:i A') }}
+                            </span>
                         </div>
                         <div class="mb-3">
                             <span class="fw-semibold text-secondary d-block mb-1"><i
@@ -182,7 +185,7 @@
                 </div>
                 <div class="mt-4">
                     <h4 class="fw-semibold mb-3" style="font-size: 1.1rem; color: #0d6efd;">
-                        <i class="bi bi-paperclip me-2"></i> Dokumen Dimuat Naik
+                        <i class="bi bi-paperclip me-2"></i> Dokumen
                     </h4>
                     @php
                         $dokumenNames = [
