@@ -143,6 +143,8 @@
                 <input type="text" class="form-control" id="jabatan" name="jabatan"
                     value="{{ auth()->user()->jabatan ?? '' }}" required />
             </div>
+            <br>
+            <br>
 
             <!-- Seksyen 2.0 Latar Belakang -->
             <div class="mb-4">
@@ -200,13 +202,14 @@
                     <tbody id="implikasiBody">
                         <tr>
                             <td class="text-center">1</td>
-                            <td><input type="text" name="keterangan[]" class="form-control text-center" required></td>
-                            <td><input type="number" name="jumlah[]" class="form-control text-center" step="0.01"
-                                    min="0" value="0" required></td>
+                            <td><input type="text" name="keterangan[]" class="form-control text-center" required>
+                            </td>
+                            <td><input type="number" name="jumlah[]" class="form-control text-center"
+                                    step="0.01" min="0" value="0" required></td>
                             <td class="text-center">
                                 <div class="d-flex align-items-center justify-content-center gap-2">
-                                    <select name="sst_flag[]" class="form-select sst-flag text-center" style="width:auto"
-                                        required>
+                                    <select name="sst_flag[]" class="form-select sst-flag text-center"
+                                        style="width:auto" required>
                                         <option value="Tiada">Tiada</option>
                                         <option value="Ada">Ada</option>
                                     </select>
@@ -364,8 +367,7 @@
                     '/',
                     {
                         name: 'styles',
-                        items: ['Styles', 'Format', 'Font', 'FontSize'
-                        ]
+                        items: ['Styles', 'Format', 'Font', 'FontSize']
                     },
                     {
                         name: 'colors',
