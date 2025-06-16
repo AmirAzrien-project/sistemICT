@@ -1,146 +1,112 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <img src="https://images.seeklogo.com/logo-png/30/1/kerajaan-negeri-johor-logo-png_seeklogo-306450.png"
-                            class="h-12 w-auto" alt="Logo Kerajaan Malaysia">
+<nav class="navbar navbar-expand-lg johor-header shadow-sm">
+    <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <img src="https://images.seeklogo.com/logo-png/30/1/kerajaan-negeri-johor-logo-png_seeklogo-306450.png"
+                alt="Jata Johor" class="johor-logo">
+            <div>
+                <span class="d-block fw-bold">SISTEM PENTADBIRAN</span>
+                <small class="d-block text-muted">JOHOR DARUL TA'ZIM</small>
+            </div>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                @if (auth()->user()->type == 1)
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-johor {{ request()->routeIs('dashboard.umum') ? 'active' : '' }}"
+                            href="{{ route('dashboard.umum') }}">UTAMA</a>
+                    </li>
+                @endif
+                @if (auth()->user()->type == 2)
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-johor {{ request()->routeIs('dashboard.sekretariat') ? 'active' : '' }}"
+                            href="{{ route('dashboard.sekretariat') }}">UTAMA</a>
+                    </li>
+                @endif
+                @if (auth()->user()->type == 3)
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-johor {{ request()->routeIs('dashboard.adminjabatan') ? 'active' : '' }}"
+                            href="{{ route('dashboard.adminjabatan') }}">UTAMA</a>
+                    </li>
+                @endif
+                @if (auth()->user()->type == 4)
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-johor {{ request()->routeIs('dashboard.superadmin') ? 'active' : '' }}"
+                            href="{{ route('dashboard.superadmin') }}">UTAMA</a>
+                    </li>
+                @endif
+                @if (in_array(auth()->user()->type, [2, 3, 4]))
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-johor {{ request()->routeIs('pengguna', 'pengguna.create', 'pengguna.edit') ? 'active' : '' }}"
+                            href="{{ route('pengguna') }}">
+                            PENGGUNA
+                        </a>
+                    </li>
+                @endif
+                <li class="nav-item dropdown">
+                    <a class="nav-link nav-link-johor dropdown-toggle {{ request()->routeIs('permohonan.*', 'pengurusan.*') ? 'active' : '' }}"
+                        href="#" id="permohonanDropdown" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        PERMOHONAN
                     </a>
-                </div>
-
-                <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    @auth
-                        @php
-                            $userLinks = match (auth()->user()->type) {
-                                1 => [
-                                    ['route' => 'dashboard.umum', 'text' => 'Utama'],
-                                    ['route' => 'hubungi.kami', 'text' => 'Hubungi Kami'],
-                                    ['route' => 'maklumat', 'text' => 'Maklumat'],
-                                    ['route' => 'ubahsuai', 'text' => 'Ubahsuai'],
-                                    ['route' => 'tetapan', 'text' => 'Tetapan'],
-                                ],
-                                2 => [
-                                    ['route' => 'dashboard.sekretariat', 'text' => 'Utama'],
-                                    ['route' => 'hubungi.kami', 'text' => 'Hubungi Kami'],
-                                    ['route' => 'maklumat', 'text' => 'Maklumat'],
-                                    ['route' => 'pengguna', 'text' => 'Pengguna'],
-                                    ['route' => 'tetapan', 'text' => 'Tetapan'],
-                                ],
-                                3 => [
-                                    ['route' => 'dashboard.adminjabatan', 'text' => 'Utama'],
-                                    ['route' => 'hubungi.kami', 'text' => 'Hubungi Kami'],
-                                    ['route' => 'maklumat', 'text' => 'Maklumat'],
-                                    ['route' => 'pengguna', 'text' => 'Pengguna'],
-                                    ['route' => 'tetapan', 'text' => 'Tetapan'],
-                                ],
-                                4 => [
-                                    ['route' => 'dashboard.superadmin', 'text' => 'Utama'],
-                                    ['route' => 'hubungi.kami', 'text' => 'Hubungi Kami'],
-                                    ['route' => 'maklumat', 'text' => 'Maklumat'],
-                                    ['route' => 'pengguna', 'text' => 'Pengguna'],
-                                    ['route' => 'tetapan', 'text' => 'Tetapan'],
-                                ],
-                                default => [],
-                            };
-                        @endphp
-
-                        @foreach ($userLinks as $link)
-                            <x-nav-link :href="route($link['route'])" :active="request()->routeIs($link['route'])">
-                                {{ $link['text'] }}
-                            </x-nav-link>
-                        @endforeach
-                    @endauth
-                </div>
-            </div>
-
-            <!-- Settings Dropdown -->
-            @auth
-                <div class="hidden sm:flex sm:items-center sm:ms-6">
-                    <x-dropdown align="right" width="48">
-                        <x-slot name="trigger">
-                            <button
-                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                                <div>{{ Auth::user()->name }}</div>
-                                <div class="ms-1">
-                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd"
-                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                </div>
-                            </button>
-                        </x-slot>
-
-                        <x-slot name="content">
-                            <x-dropdown-link :href="route('profile.edit')">
-                                {{ __('Profil') }}
-                            </x-dropdown-link>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                    {{ __('Log Keluar') }}
-                                </x-dropdown-link>
-                            </form>
-                        </x-slot>
-                    </x-dropdown>
-                </div>
-            @endauth
-
-            <!-- Hamburger Menu -->
-            <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open"
-                    class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex"
-                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{ 'hidden': !open, 'inline-flex': open }" class="hidden" stroke-linecap="round"
-                            stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Responsive Navigation -->
-    <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            @auth
-                @foreach ($userLinks as $link)
-                    <x-responsive-nav-link :href="route($link['route'])" :active="request()->routeIs($link['route'])">
-                        {{ $link['text'] }}
-                    </x-responsive-nav-link>
-                @endforeach
-            @endauth
+                    <ul class="dropdown-menu" aria-labelledby="permohonanDropdown">
+                        <li>
+                            <a class="dropdown-item {{ request()->routeIs('permohonan.index', 'permohonan.edit', 'permohonan.tambah') ? 'active' : '' }}"
+                                href="{{ route('permohonan.index') }}">PERMOHONAN</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {{ request()->routeIs('permohonan.senarai') ? 'active' : '' }}"
+                                href="{{ route('permohonan.senarai') }}">SENARAI</a>
+                        </li>
+                        @if (in_array(auth()->user()->type, [2, 3, 4]))
+                            <li>
+                                <a class="dropdown-item {{ request()->routeIs('pengurusan.index') ? 'active' : '' }}"
+                                    href="{{ route('pengurusan.index') }}">PENGURUSAN</a>
+                            </li>
+                        @endif
+                    </ul>
+                </li>
+                @if (in_array(auth()->user()->type, [2, 3, 4]))
+                    <li class="nav-item dropdown">
+                        <a class="nav-link nav-link-johor dropdown-toggle {{ request()->routeIs('mesyuarat.*') ? 'active' : '' }}"
+                            href="#" id="mesyuaratDropdown" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            MESYUARAT
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="mesyuaratDropdown">
+                            <li>
+                                <a class="dropdown-item {{ request()->routeIs('mesyuarat.index') ? 'active' : '' }}"
+                                    href="{{ route('mesyuarat.index') }}">MESYUARAT</a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
+            </ul>
         </div>
 
-        @auth
-            <div class="pt-4 pb-1 border-t border-gray-200">
-                <div class="px-4">
-                    <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                    <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-                </div>
-
-                <div class="mt-3 space-y-1">
-                    <x-responsive-nav-link :href="route('profile.edit')">
-                        {{ __('Profil') }}
-                    </x-responsive-nav-link>
+        <div class="dropdown">
+            <button class="btn btn-johor dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                {{ Auth::user()->name }}
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                    <a class="dropdown-item" href="{{ route('profile.edit') }}">PROFIL</a>
+                </li>
+                <li>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <x-responsive-nav-link :href="route('logout')"
+                        <a class="dropdown-item" href="{{ route('logout') }}"
                             onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                            {{ __('Log Keluar') }}
-                        </x-responsive-nav-link>
+                                        this.closest('form').submit();">LOG
+                            KELUAR</a>
                     </form>
-                </div>
-            </div>
-        @endauth
+                </li>
+            </ul>
+        </div>
     </div>
 </nav>

@@ -17,5 +17,8 @@
         "stylelint-config-standard": "^38.0.0",
         "tailwindcss": "^3.1.0",
         "vite": "^6.3.5"
+    },
+    "dependencies": {
+        "idle-timer": "^1.2.0"
     }
 }

@@ -25,113 +25,10 @@
     </div>
 
     <!-- Header -->
-    <nav class="navbar navbar-expand-lg johor-header shadow-sm">
-        <div class="container-fluid">
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="https://images.seeklogo.com/logo-png/30/1/kerajaan-negeri-johor-logo-png_seeklogo-306450.png"
-                    alt="Jata Johor" class="johor-logo">
-                <div>
-                    <span class="d-block fw-bold">SISTEM PENTADBIRAN</span>
-                    <small class="d-block text-muted">JOHOR DARUL TA'ZIM</small>
-                </div>
-            </a>
-
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    @if (auth()->user()->type == 1)
-                        <li class="nav-item">
-                            <a class="nav-link nav-link-johor" href="{{ route('dashboard.umum') }}">UTAMA</a>
-                        </li>
-                    @endif
-                    @if (auth()->user()->type == 2)
-                        <li class="nav-item">
-                            <a class="nav-link nav-link-johor active"
-                                href="{{ route('dashboard.sekretariat') }}">UTAMA</a>
-                        </li>
-                    @endif
-                    @if (auth()->user()->type == 3)
-                        <li class="nav-item">
-                            <a class="nav-link nav-link-johor" href="{{ route('dashboard.adminjabatan') }}">UTAMA</a>
-                        </li>
-                    @endif
-                    @if (auth()->user()->type == 4)
-                        <li class="nav-item">
-                            <a class="nav-link nav-link-johor" href="{{ route('dashboard.superadmin') }}">UTAMA</a>
-                        </li>
-                    @endif
-                    @if (in_array(auth()->user()->type, [2, 3, 4]))
-                        <li class="nav-item">
-                            <a class="nav-link nav-link-johor" href="{{ route('pengguna') }}">PENGGUNA</a>
-                        </li>
-                    @endif
-                    <li class="nav-item dropdown">
-                        <a class="nav-link nav-link-johor dropdown-toggle" href="{{ route('permohonan.index') }}"
-                            id="permohonanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            PERMOHONAN
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="permohonanDropdown">
-                            <li>
-                                <a class="dropdown-item" href="{{ route('permohonan.index') }}">PERMOHONAN</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{{ route('permohonan.senarai') }}">SENARAI</a>
-                            </li>
-                            @if (in_array(auth()->user()->type, [2, 3, 4]))
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('pengurusan.index') }}">PENGURUSAN</a>
-                                </li>
-                            @endif
-                        </ul>
-                    </li>
-                    @if (in_array(auth()->user()->type, [2, 3, 4]))
-                        <li class="nav-item dropdown">
-                            <a class="nav-link nav-link-johor dropdown-toggle" href="{{ route('mesyuarat.index') }}"
-                                id="mesyuaratDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                MESYUARAT
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="mesyuaratDropdown">
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('mesyuarat.index') }}">MESYUARAT</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('mesyuarat.index') }}">PENGURUSAN</a>
-                                </li>
-                            </ul>
-                        </li>
-                    @endif
-                </ul>
-            </div>
-
-            <div class="dropdown">
-                <button class="btn btn-johor dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                    {{ Auth::user()->name }}
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="{{ route('profile.edit') }}">PROFIL</a></li>
-                    <li>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="dropdown-item">LOG KELUAR</button>
-                        </form>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    {{-- Notification Permohonan
-    @if (collect($statusCounts)->sum() > 0)
-        <div class="alert alert-info alert-dismissible fade show d-flex align-items-center" role="alert"
-            data-bs-toggle="collapse" href="#multipleNotifications" aria-expanded="false"
-            aria-controls="multipleNotifications">
-            <i class="bi bi-info-circle-fill me-2"></i>
-            <div>
-                <strong>Penting!</strong> Anda mempunyai beberapa permohonan dengan status yang perlu disemak. Tekan
-                untuk lihat.
-            </div>
-            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Tutup"></button>
-        </div>
-    @endif --}}
+    @include('layouts.navigation')
+    <div class="container">
+        @yield('content')
+    </div>
 
     {{-- Notification Permohonan --}}
     @php
@@ -225,7 +122,7 @@
         </div>
 
         <div class="user-info-content">
-            @php
+            {{-- @php
                 $userTypes = [
                     1 => ['label' => 'Pengguna Biasa', 'class' => 'user-badge badge-pengguna-biasa'],
                     2 => ['label' => 'Sekretariat', 'class' => 'user-badge badge-sekretariat'],
@@ -242,8 +139,14 @@
             <div class="info-row">
                 <div class="info-icon"><i class="bi bi-person-badge"></i></div>
                 <div class="info-label">Jenis Pengguna</div>
-                <div class="info-value"><span style="color: #ffffff"
+                <div class="info-value"><span style="color: white"
                         class="{{ $userType['class'] }}">{{ $userType['label'] }}</span></div>
+            </div> --}}
+
+            <div class="info-row">
+                <div class="info-icon"><i class="bi bi-person-circle"></i></div>
+                <div class="info-label">Nama</div>
+                <div class="info-value">{{ Auth::user()->name }}</div>
             </div>
 
             <div class="info-row">
@@ -258,16 +161,29 @@
                 <div class="info-value">{{ Auth::user()->jawatan ?? '-' }}</div>
             </div>
 
+            @php
+                $jabatan = Auth::user()->jabatan ?? '-';
+                // Tukar koma pertama kepada <br>
+                $jabatanFormatted = preg_replace('/,/', ',<br>', $jabatan, 1);
+            @endphp
             <div class="info-row">
-                <div class="info-icon"><i class="bi bi-person-circle"></i></div>
-                <div class="info-label">Nama</div>
-                <div class="info-value">{{ Auth::user()->name }}</div>
+                <div class="info-icon"><i class="bi bi-building"></i></div>
+                <div class="info-label">Jabatan</div>
+                <div class="info-value" style="overflow-wrap:break-word;word-break:break-word;min-width:0;">
+                    {!! $jabatanFormatted !!}
+                </div>
             </div>
 
             <div class="info-row">
                 <div class="info-icon"><i class="bi bi-envelope"></i></div>
                 <div class="info-label">Emel</div>
                 <div class="info-value">{{ Auth::user()->email }}</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-icon"><i class="bi bi-telephone"></i></div>
+                <div class="info-label">No. Telefon</div>
+                <div class="info-value">{{ Auth::user()->notel }}</div>
             </div>
         </div>
     </div>

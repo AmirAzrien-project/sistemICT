@@ -26,98 +26,10 @@
     </div>
 
     <!-- Header -->
-    <nav class="navbar navbar-expand-lg johor-header shadow-sm">
-        <div class="container-fluid">
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="https://images.seeklogo.com/logo-png/30/1/kerajaan-negeri-johor-logo-png_seeklogo-306450.png"
-                    alt="Jata Johor" class="johor-logo">
-                <div>
-                    <span class="d-block fw-bold">SISTEM PENTADBIRAN</span>
-                    <small class="d-block text-muted">JOHOR DARUL TA'ZIM</small>
-                </div>
-            </a>
-
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    @if (auth()->user()->type == 1)
-                        <li class="nav-item">
-                            <a class="nav-link nav-link-johor" href="{{ route('dashboard.umum') }}">UTAMA</a>
-                        </li>
-                    @endif
-                    @if (auth()->user()->type == 2)
-                        <li class="nav-item">
-                            <a class="nav-link nav-link-johor" href="{{ route('dashboard.sekretariat') }}">UTAMA</a>
-                        </li>
-                    @endif
-                    @if (auth()->user()->type == 3)
-                        <li class="nav-item">
-                            <a class="nav-link nav-link-johor" href="{{ route('dashboard.adminjabatan') }}">UTAMA</a>
-                        </li>
-                    @endif
-                    @if (auth()->user()->type == 4)
-                        <li class="nav-item">
-                            <a class="nav-link nav-link-johor" href="{{ route('dashboard.superadmin') }}">UTAMA</a>
-                        </li>
-                    @endif
-                    @if (in_array(auth()->user()->type, [2, 3, 4]))
-                        <li class="nav-item">
-                            <a class="nav-link nav-link-johor" href="{{ route('pengguna') }}">PENGGUNA</a>
-                        </li>
-                    @endif
-                    <li class="nav-item dropdown">
-                        <a class="nav-link nav-link-johor dropdown-toggle active" href="{{ route('permohonan.index') }}"
-                            id="permohonanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            PERMOHONAN
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="permohonanDropdown">
-                            <li>
-                                <a class="dropdown-item" href="{{ route('permohonan.index') }}">PERMOHONAN</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{{ route('permohonan.senarai') }}">SENARAI</a>
-                            </li>
-                            @if (in_array(auth()->user()->type, [2, 3, 4]))
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('pengurusan.index') }}">PENGURUSAN</a>
-                                </li>
-                            @endif
-                        </ul>
-                    </li>
-                    @if (in_array(auth()->user()->type, [2, 3, 4]))
-                        <li class="nav-item dropdown">
-                            <a class="nav-link nav-link-johor dropdown-toggle" href="{{ route('mesyuarat.index') }}"
-                                id="mesyuaratDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                MESYUARAT
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="mesyuaratDropdown">
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('mesyuarat.index') }}">MESYUARAT</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('mesyuarat.index') }}">PENGURUSAN</a>
-                                </li>
-                            </ul>
-                        </li>
-                    @endif
-                </ul>
-            </div>
-
-            <div class="dropdown">
-                <button class="btn btn-johor dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                    {{ Auth::user()->name }}
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="{{ route('profile.edit') }}">PROFIL</a></li>
-                    <li>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="dropdown-item">LOG KELUAR</button>
-                        </form>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    @include('layouts.navigation')
+    <div class="container">
+        @yield('content')
+    </div>
 
     <!-- Main content -->
     <main class="container my-5">
@@ -417,39 +329,39 @@
         });
     </script>
 
-<script>
-window.addEventListener('pageshow', function(event) {
-    // Hanya clear input yang BUKAN readonly dan BUKAN disabled
-    if (event.persisted || performance.getEntriesByType("navigation")[0]?.type === "back_forward") {
-        const form = document.getElementById('permohonanForm');
-        if (form) {
-            // Senarai ID input yang user kena isi sendiri
-            const manualInputIds = [
-                'skop', 'tajuk', 'keterangan'
-                // tambah ID lain jika ada
-            ];
+    <script>
+        window.addEventListener('pageshow', function(event) {
+            // Hanya clear input yang BUKAN readonly dan BUKAN disabled
+            if (event.persisted || performance.getEntriesByType("navigation")[0]?.type === "back_forward") {
+                const form = document.getElementById('permohonanForm');
+                if (form) {
+                    // Senarai ID input yang user kena isi sendiri
+                    const manualInputIds = [
+                        'skop', 'tajuk', 'keterangan'
+                        // tambah ID lain jika ada
+                    ];
 
-            manualInputIds.forEach(function(id) {
-                const el = document.getElementById(id);
-                if (el) {
-                    if (el.tagName === 'SELECT') {
-                        el.selectedIndex = 0;
-                    } else if (el.tagName === 'TEXTAREA') {
-                        el.value = '';
-                    } else {
-                        el.value = '';
-                    }
+                    manualInputIds.forEach(function(id) {
+                        const el = document.getElementById(id);
+                        if (el) {
+                            if (el.tagName === 'SELECT') {
+                                el.selectedIndex = 0;
+                            } else if (el.tagName === 'TEXTAREA') {
+                                el.value = '';
+                            } else {
+                                el.value = '';
+                            }
+                        }
+                    });
+
+                    // Clear semua file input
+                    form.querySelectorAll('input[type="file"]').forEach(function(fileInput) {
+                        fileInput.value = '';
+                    });
                 }
-            });
-
-            // Clear semua file input
-            form.querySelectorAll('input[type="file"]').forEach(function(fileInput) {
-                fileInput.value = '';
-            });
-        }
-    }
-});
-</script>
+            }
+        });
+    </script>
 
 </body>
 
