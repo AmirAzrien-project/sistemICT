@@ -94,5 +94,4 @@ Issue -> Credentials
 
 ---
 
-Projek ini dibangunkan untuk tujuan akademik/dalaman organisasi sahaja.
-- [@AmirAzrien](https://github.com/AmirAzrien) - Pembangun utama
+## Projek ini dibangunkan untuk tujuan akademik/dalaman organisasi sahaja.
