@@ -78,7 +78,7 @@
                     <div class="mb-3">
                         <span class="fw-semibold text-secondary d-block mb-1"><i class="bi bi-calendar-event me-1"></i>
                             Tarikh Mohon</span>
-                        <div class="fs-6 text-dark border rounded-3 p-2 bg-light">
+                        <div class="fs-6 text-dark border rounded-3 p-2 bg-light" style="margin-bottom: 16.5px">
                             {{ \Carbon\Carbon::parse($permohonan->created_at)->translatedFormat('j F Y') }}
                             <span class="text-muted ms-2" style="font-size:0.95em">
                                 {{ \Carbon\Carbon::parse($permohonan->created_at)->format('h:i A') }}
