@@ -41,7 +41,8 @@
             </div>
         @endif
 
-        <div class="main-container shadow-sm rounded-4 p-4 bg-white" style="width: 95%; margin: 0 auto;">
+        <div class="main-container shadow-sm rounded-4 p-4 bg-white"
+            style="width: 85%; margin: 0 auto;margin-top:30px;margin-bottom:30px">
             <h2 class="mb-4 text-primary fw-bold">Pengurusan Permohonan</h2>
 
             <!-- Improved Filter and Search Form -->
@@ -128,24 +129,74 @@
                                         {{ $item->created_at->format('h:i A') }}
                                     </span>
                                 </td>
-                                <td>{{ $item->skop }}</td>
-                                <td style="text-align: left">{{ $item->tajuk }}</td>
-                                <td>{{ $item->jabatan }}</td>
+                                <td>
+                                    <span
+                                        style="max-width: 180px; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: middle; cursor: pointer;"
+                                        data-bs-toggle="tooltip" data-bs-placement="top"
+                                        title="{{ $item->skop ?? '-' }}">
+                                        {{ $item->skop ?? '-' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span
+                                        style="max-width: 180px; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: middle; cursor: pointer;"
+                                        data-bs-toggle="tooltip" data-bs-placement="top"
+                                        title="{{ $item->tajuk ?? '-' }}">
+                                        {{ $item->tajuk ?? '-' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span
+                                        style="max-width: 180px; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: middle; cursor: pointer;"
+                                        data-bs-toggle="tooltip" data-bs-placement="top"
+                                        title="{{ $item->jabatan ?? '-' }}">
+                                        {{ $item->jabatan ?? '-' }}
+                                    </span>
+                                </td>
                                 <td>
                                     @php
-                                        $status = $item->status_sekretariat;
-                                        $badgeClass = match ($status) {
-                                            'Menunggu' => 'secondary',
-                                            'Lengkap' => 'success',
-                                            'Tidak Lengkap' => 'danger',
-                                            'Perlu Semakan Semula' => 'warning',
-                                            'Disyorkan' => 'info',
-                                            'Telah Dikemaskini' => 'primary',
-                                            default => 'dark',
-                                        };
+                                        $status = $item->status_sekretariat ?? 'Dalam Proses';
+
+                                        $statusMap = [
+                                            'Lengkap' => [
+                                                'class' => 'bg-success text-white',
+                                                'icon' => 'check-circle-fill',
+                                            ],
+                                            'Tidak Lengkap' => [
+                                                'class' => 'bg-danger text-white',
+                                                'icon' => 'x-circle-fill',
+                                            ],
+                                            'Perlu Semakan Semula' => [
+                                                'class' => 'bg-secondary text-white',
+                                                'icon' => 'exclamation-triangle-fill',
+                                            ],
+                                            'Disyorkan' => [
+                                                'class' => 'bg-primary text-white',
+                                                'icon' => 'star-fill',
+                                            ],
+                                            'Menunggu' => [
+                                                'class' => 'bg-light text-dark',
+                                                'icon' => 'hourglass-split',
+                                            ],
+                                            'Telah Dikemaskini' => [
+                                                'class' => 'bg-info text-white',
+                                                'icon' => 'arrow-clockwise',
+                                            ],
+                                            'Selesai' => [
+                                                'class' => 'bg-success text-white',
+                                                'icon' => 'award-fill',
+                                            ],
+                                        ];
+
+                                        $badgeClass = $statusMap[$status]['class'] ?? 'bg-light text-dark';
+                                        $icon = $statusMap[$status]['icon'] ?? 'question-circle-fill';
                                     @endphp
 
-                                    <span class="badge bg-{{ $badgeClass }}">
+                                    <span
+                                        class="badge {{ $badgeClass }} px-3 py-2 fs-6 d-inline-flex align-items-center gap-1 shadow-sm"
+                                        style="border-radius: 0.4rem; font-weight: 500; letter-spacing: 0.5px;"
+                                        data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $status }}">
+                                        <i class="bi bi-{{ $icon }}" aria-hidden="true"></i>
                                         {{ $status }}
                                     </span>
                                 </td>
@@ -211,6 +262,11 @@
             if (event.persisted || performance.getEntriesByType("navigation")[0]?.type === "back_forward") {
                 hideLoadingOverlay();
             }
+        });
+
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+            new bootstrap.Tooltip(tooltipTriggerEl);
         });
     </script>
 

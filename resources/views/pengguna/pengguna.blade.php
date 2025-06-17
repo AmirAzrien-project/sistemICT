@@ -128,7 +128,7 @@
                             <th class="text-start" style="width: 200px;">Nama Penuh</th>
                             <th class="text-start" style="width: 200px;">Emel</th>
                             <th class="text-start" style="width: 200px;">Jawatan</th>
-                            <th class="text-start" style="width: 230px;">Jabatan</th> {{-- Ubah di sini --}}
+                            <th class="text-start" style="width: 230px;">Jabatan</th>
                             <th class="text-center"></th>
                         </tr>
                     </thead>
