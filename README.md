@@ -64,7 +64,7 @@ npm install && npm run dev
 Sediakan pangkalan data dan masukkan data asas.
 
 ```bash
-php artisan migrate --seed
+php artisan migrate
 ```
 
 Arahan ini akan cipta semua jadual dan isikan data contoh untuk sistem berfungsi dengan betul.
@@ -74,7 +74,7 @@ Arahan ini akan cipta semua jadual dan isikan data contoh untuk sistem berfungsi
 Akhir sekali, jalankan 'local server' untuk guna SistemICT di pelayar web.
 
 ```bash
-php artisan serve
+php artisan serve (or npm start)
 ```
 
 Selepas server berjalan, satu pautan seperti `http://127.0.0.1:8000` akan dipaparkan. **Buka pautan itu di 'browser' anda** untuk mula guna aplikasi SistemICT.
@@ -88,7 +88,7 @@ Issue -> Credentials
 | Jenis Pengguna | Emel                       | Kata Laluan |
 |----------------|----------------------------|-------------|
 | Pengguna Awam  | user.biasa@johor.gov.my    | password    |
-| Sekretariat    | user.sek@johor.gov.my          | password    |
+| Sekretariat    | user.sek@johor.gov.my      | password    |
 | Admin Jabatan  | user.admin@johor.gov.my    | password    |
 | Super Admin    | user.super@johor.gov.my    | password    |
 
