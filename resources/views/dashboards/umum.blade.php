@@ -85,7 +85,7 @@
                 <div class="user-info-card h-100" style="font-size: 0.98rem;">
                     <div class="card-body py-3 px-4">
                         <div class="fw-semibold mb-3 text-primary" style="font-size:1.1em;">
-                            <i class="bi bi-bell-fill me-1"></i> Notifikasi
+                            <i class="bi bi-bell-fill me-1"></i> Notifikasi Permohonan
                         </div>
                         <div class="row text-center mb-3">
                             <div class="col-6 col-md-3 mb-2">
