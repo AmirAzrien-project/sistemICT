@@ -58,9 +58,12 @@
                 @include('profile.partials.update-password-form')
             </div>
 
-            <div class="profile-section delete-user-wrapper">
-                @include('profile.partials.delete-user-form')
-            </div>
+            @if (in_array(auth()->user()->type, [2, 3, 4]))
+                <div class="profile-section delete-user-wrapper">
+                    @include('profile.partials.delete-user-form')
+                </div>
+            @endif
+
         </div>
     </div>
 
@@ -68,15 +71,19 @@
     <footer class="footer-johor">
         &copy; 2025 Sistem Kerajaan Johor. Hak cipta terpelihara.
     </footer>
+
     @if (session('success'))
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 var toastEl = document.getElementById('successToast');
-                var toast = new bootstrap.Toast(toastEl);
-                toast.show();
+                if (toastEl) {
+                    var toast = new bootstrap.Toast(toastEl, { delay: 10000 }); // 10 saat
+                    toast.show();
+                }
             });
         </script>
     @endif
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>

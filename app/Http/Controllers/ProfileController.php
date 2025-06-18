@@ -27,24 +27,25 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        // dd($request->user()->toArray()); // <--- Add it here temporarily
+        $data = $request->validated();
 
-        $request->user()->fill($request->validated());
+        // Format notel sebelum simpan
+        if (isset($data['notel'])) {
+            $notel = preg_replace('/\D/', '', $data['notel']);
+            if (strlen($notel) > 3) {
+                $data['notel'] = substr($notel, 0, 3) . '-' . substr($notel, 3, 7);
+            } else {
+                $data['notel'] = $notel;
+            }
+        }
 
+        $request->user()->fill($data);
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
         }
-
         $request->user()->save();
 
-        // ✅ Simpan log perubahan profil
-        ActivityLog::create([
-            'id_pekerja' => $request->user()->id_pekerja,
-            'activity' => 'Kemaskini Profil',
-            'ip_address' => $request->ip(),
-        ]);
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated')
+        return Redirect::route('profile.edit')
             ->with('success', 'Maklumat anda telah berjaya dikemaskini');
     }
 
@@ -58,13 +59,6 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
-
-        // ✅ Simpan log padam akaun
-        ActivityLog::create([
-            'id_pekerja' => $user->id_pekerja,
-            'activity' => 'Padam Akaun',
-            'ip_address' => $request->ip(),
-        ]);
 
         Auth::logout();
 

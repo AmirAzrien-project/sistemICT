@@ -50,6 +50,13 @@
                             value="{{ Auth::user()->email }}" required autocomplete="username" />
                     </div>
                     <br>
+                    <div>
+                        <label for="notel" class="form-label">{{ __('No Tel') }}</label>
+                        <input id="notel" name="notel" type="text" class="form-control"
+                            value="{{ Auth::user()->notel }}" required autocomplete="username" maxlength="12"
+                            oninput="formatNotel(this)" placeholder="012-3456789" />
+                    </div>
+                    <br>
                     <div class="flex items-center gap-4">
                         <button type="submit" class="btn btn-johor">{{ __('Simpan') }}</button>
                     </div>
@@ -59,6 +66,15 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function formatNotel(input) {
+            let val = input.value.replace(/\D/g, ''); // Buang semua bukan nombor
+            if (val.length > 3) {
+                val = val.slice(0, 3) + '-' + val.slice(3, 10);
+            }
+            input.value = val;
+        }
+    </script>
 </body>
 
 </html>
