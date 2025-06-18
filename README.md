@@ -62,7 +62,7 @@ npm install && npm run dev
 ### 4. Sediakan Pangkalan Data
 
 Sediakan pangkalan data dan masukkan data asas.
-
+* Semak file DatabaseSeeder.php sebelum mula proses migration.
 ```bash
 php artisan migrate
 ```
@@ -83,7 +83,7 @@ Selepas server berjalan, satu pautan seperti `http://127.0.0.1:8000` akan dipapa
 
 ## 🧪 Akaun Demo
 
-Issue -> Credentials
+Sila semak (Issue -> Credentials) untuk menggunakan data demo.
 
 | Jenis Pengguna | Emel                       | Kata Laluan |
 |----------------|----------------------------|-------------|
