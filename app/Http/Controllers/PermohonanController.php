@@ -140,7 +140,7 @@ class PermohonanController extends Controller
             }
         }
 
-        // $permohonan->save();
+        $permohonan->save();
 
         return redirect()->route('permohonan.senarai')->with('success', 'Permohonan telah dikemaskini.');
     }

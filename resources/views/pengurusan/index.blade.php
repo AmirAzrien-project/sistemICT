@@ -34,15 +34,16 @@
 
     <!-- Main Content -->
     <div class="">
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
         <div class="main-container shadow-sm rounded-4 p-4 bg-white"
             style="width: 85%; margin: 0 auto;margin-top:30px;margin-bottom:30px">
+
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
             <h2 class="mb-4 text-primary fw-bold">Pengurusan Permohonan</h2>
 
             <!-- Improved Filter and Search Form -->

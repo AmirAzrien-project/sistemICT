@@ -200,7 +200,7 @@
                             <i class="fas fa-phone"></i>
                         </span>
                         <input id="notel" name="notel" type="text" class="form-control with-icon"
-                            placeholder="Masukkan nombor telefon" required pattern="[0-9]{10,11}" autocomplete="off">
+                            placeholder="Masukkan nombor telefon" required maxlength="12" autocomplete="off">
                     </div>
                     <small class="form-text text-muted">(Contoh: 0123456789)</small>
                 </div>
@@ -396,6 +396,14 @@
                     behavior: "smooth"
                 });
             }
+        });
+
+        document.getElementById('notel').addEventListener('input', function(e) {
+            let val = this.value.replace(/\D/g, ''); // Buang semua bukan nombor
+            if (val.length > 3) {
+                val = val.slice(0, 3) + '-' + val.slice(3, 10);
+            }
+            this.value = val;
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

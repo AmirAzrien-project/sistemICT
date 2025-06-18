@@ -31,15 +31,16 @@
         @yield('content')
     </div>
 
-    {{-- Notification --}}
-    @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Berjaya!</strong> {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
     <main class="container py-4" style="max-width: 1050px; font-family: 'Inter', sans-serif;">
+
+        {{-- Notification --}}
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Berjaya!</strong> {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
         <!-- Page Title -->
         <h1 class="mb-4 text-primary fw-bold border-bottom pb-2" style="font-size: 2rem; line-height: 1.3;">
             <i class="bi bi-journal-text me-2"></i> Maklumat Permohonan

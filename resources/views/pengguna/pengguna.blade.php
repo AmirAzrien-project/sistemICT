@@ -32,16 +32,17 @@
         @yield('content')
     </div>
 
-    {{-- Notification Alert --}}
-    @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
-        </div>
-    @endif
-
     <!-- Main Content -->
     <div class="container my-5">
+
+        {{-- Notification Alert --}}
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
+            </div>
+        @endif
+
         <div class="card shadow-sm rounded-4 p-4">
             <h1 class="text-primary mb-4" style="color: #003366; font-weight: 700;">Senarai Pengguna Berdaftar</h1>
 
@@ -207,35 +208,6 @@
                                             <div class="invalid-feedback">Sila pilih jenis pengguna.</div>
                                         </div>
 
-                                        <!-- Nama -->
-                                        <div class="col-md-6">
-                                            <label for="name-{{ $user->id }}"
-                                                class="form-label fw-semibold">Nama</label>
-                                            <div class="input-group has-validation">
-                                                <span class="input-group-text"><i
-                                                        class="bi bi-person-fill"></i></span>
-                                                <input type="text" id="name-{{ $user->id }}"
-                                                    class="form-control" name="name" value="{{ $user->name }}"
-                                                    style="height: 3.12rem" required
-                                                    placeholder="Masukkan nama penuh">
-                                                <div class="invalid-feedback">Sila masukkan nama pengguna.</div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Email -->
-                                        <div class="col-md-6">
-                                            <label for="email-{{ $user->id }}"
-                                                class="form-label fw-semibold">Email</label>
-                                            <div class="input-group has-validation">
-                                                <span class="input-group-text"><i
-                                                        class="bi bi-envelope-fill"></i></span>
-                                                <input type="email" id="email-{{ $user->id }}"
-                                                    class="form-control" name="email" value="{{ $user->email }}"
-                                                    style="height: 3.12rem" required placeholder="contoh@domain.com">
-                                                <div class="invalid-feedback">Sila masukkan email yang sah.</div>
-                                            </div>
-                                        </div>
-
                                         <!-- Jawatan -->
                                         <div class="col-md-6">
                                             <label for="jawatan-{{ $user->id }}"
@@ -245,7 +217,22 @@
                                                         class="bi bi-briefcase-fill"></i></span>
                                                 <input type="text" id="jawatan-{{ $user->id }}"
                                                     class="form-control" name="jawatan" value="{{ $user->jawatan }}"
-                                                    style="height: 3.13rem" placeholder="Jawatan pengguna">
+                                                    style="height: 3.1rem" placeholder="Jawatan pengguna">
+                                            </div>
+                                        </div>
+
+                                        <!-- Nama -->
+                                        <div class="col-md-6">
+                                            <label for="name-{{ $user->id }}"
+                                                class="form-label fw-semibold">Nama</label>
+                                            <div class="input-group has-validation">
+                                                <span class="input-group-text"><i
+                                                        class="bi bi-person-fill"></i></span>
+                                                <input type="text" id="name-{{ $user->id }}"
+                                                    class="form-control" name="name" value="{{ $user->name }}"
+                                                    style="height: 3.13rem" required
+                                                    placeholder="Masukkan nama penuh">
+                                                <div class="invalid-feedback">Sila masukkan nama pengguna.</div>
                                             </div>
                                         </div>
 
@@ -261,7 +248,35 @@
                                             </div>
                                         </div>
 
-                                        <!-- Tarikh Daftar -->
+                                        <!-- Email -->
+                                        <div class="col-md-6">
+                                            <label for="email-{{ $user->id }}"
+                                                class="form-label fw-semibold">Email</label>
+                                            <div class="input-group has-validation">
+                                                <span class="input-group-text"><i
+                                                        class="bi bi-envelope-fill"></i></span>
+                                                <input type="email" id="email-{{ $user->id }}"
+                                                    class="form-control" name="email" value="{{ $user->email }}"
+                                                    style="height: 3.13rem" required placeholder="contoh@domain.com">
+                                                <div class="invalid-feedback">Sila masukkan email yang sah.</div>
+                                            </div>
+                                        </div>
+
+                                        <!-- No Tel -->
+                                        <div class="col-md-6">
+                                            <label for="notel-{{ $user->id }}" class="form-label fw-semibold">No
+                                                Tel</label>
+                                            <div class="input-group has-validation">
+                                                <span class="input-group-text"><i
+                                                        class="bi bi-telephone-fill"></i></span>
+                                                <input type="notel" id="notel-{{ $user->id }}"
+                                                    class="form-control" name="notel" value="{{ $user->notel }}"
+                                                    style="height: 3.13rem" required placeholder="012-3456789">
+                                                <div class="invalid-feedback">Sila masukkan no telefon yang sah.</div>
+                                            </div>
+                                        </div>
+
+                                        {{-- <!-- Tarikh Daftar -->
                                         <div class="col-md-6 position-relative">
                                             <label for="TarikhDaftar-{{ $user->id }}"
                                                 class="form-label fw-semibold">Tarikh Daftar</label>
@@ -273,7 +288,8 @@
                                                     value="{{ $user->created_at->format('Y-m-d') }}"
                                                     style="height: 3.13rem" required>
                                             </div>
-                                        </div>
+                                        </div> --}}
+
                                     </div>
                                 </div>
 
@@ -402,6 +418,18 @@
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             tooltipTriggerList.forEach(function(tooltipTriggerEl) {
                 new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
+    <script>
+        // Untuk semua input[name="notel"]
+        document.querySelectorAll('input[name="notel"]').forEach(function(input) {
+            input.addEventListener('input', function() {
+                let val = this.value.replace(/\D/g, ''); // Buang semua bukan nombor
+                if (val.length > 3) {
+                    val = val.slice(0, 3) + '-' + val.slice(3, 10);
+                }
+                this.value = val;
             });
         });
     </script>

@@ -52,7 +52,8 @@ class Permohonan extends Model
 
         $kodSkop = $kodSkopList[$skop] ?? 'LAIN';
         $year = now()->format('Y');
-        $jabatan = strtoupper(str_replace(' ', '', $user->jabatan));
+        $jabatan = strtoupper(str_replace([',', ' '], '', $user->jabatan));
+        // $jabatan = strtoupper(str_replace(' ', '', $user->jabatan));
 
         $count = DB::table('permohonan')
             ->whereYear('created_at', $year)

@@ -30,160 +30,154 @@
         @yield('content')
     </div>
 
-    {{-- Notification Permohonan --}}
-    @php
-        $jumlahPerluSemak = $statusCounts['Perlu Semakan Semula'] ?? 0;
-        $jumlahTidakLengkap = $statusCounts['Tidak Lengkap'] ?? 0;
-    @endphp
-    @if ($jumlahPerluSemak > 0 || $jumlahTidakLengkap > 0)
-        <div class="alert alert-info alert-dismissible fade show d-flex align-items-center" role="alert"
-            data-bs-toggle="collapse" href="#multipleNotifications" aria-expanded="false"
-            aria-controls="multipleNotifications">
-            <i class="bi bi-info-circle-fill me-2"></i>
-            <div>
-                <strong>Notifikasi Permohonan</strong>
-                <span>Anda mempunyai permohonan yang memerlukan tindakan lanjut. Sila tekan bar ini untuk melihat
-                    butiran.</span>
-            </div>
-            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Tutup"></button>
-        </div>
-    @else
-        <div class="alert alert-info alert-dismissible fade show d-flex align-items-center" role="alert">
-            <i class="bi bi-info-circle-fill me-2"></i>
-            <div>
-                <strong>Notifikasi Permohonan</strong>
-                <span>Tiada notifikasi buat masa ini.</span>
-            </div>
-            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Tutup"></button>
-        </div>
-    @endif
-
-    <div id="multipleNotifications" class="collapse">
-        @foreach ($statusCounts as $status => $count)
-            @if ($count > 0)
-                @switch($status)
-                    @case('Tidak Lengkap')
-                        <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
-                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                            <div>
-                                <strong>Perhatian!</strong> Anda mempunyai {{ $count }} permohonan berstatus
-                                <strong>"Tidak Lengkap"</strong>.
-                                <a href="{{ route('permohonan.index') }}" class="alert-link">Klik untuk semak</a>.
-                            </div>
-                            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"
-                                aria-label="Tutup"></button>
+    <div class="container">
+        <div class="row g-4">
+            <!-- Maklumat Pengguna di kiri -->
+            <div class="col-lg-6">
+                <div class="user-info-card h-100">
+                    <div class="user-info-header">
+                        <h1 style="color: #ffffff">MAKLUMAT PENGGUNA</h1>
+                        <p>Berikut adalah maklumat akaun anda seperti yang direkodkan dalam sistem.</p>
+                    </div>
+                    <div class="user-info-content">
+                        <div class="info-row">
+                            <div class="info-icon"><i class="bi bi-person-circle"></i></div>
+                            <div class="info-label">Nama</div>
+                            <div class="info-value">{{ Auth::user()->name }}</div>
                         </div>
-                    @break
-
-                    @case('Perlu Semakan Semula')
-                        <div class="alert alert-warning alert-dismissible fade show d-flex align-items-center" role="alert">
-                            <i class="bi bi-exclamation-circle-fill me-2"></i>
-                            <div>
-                                <strong>Amaran!</strong> Anda mempunyai {{ $count }} permohonan berstatus
-                                <strong>"Perlu Semakan Semula"</strong>.
-                                <a href="{{ route('permohonan.index') }}" class="alert-link">Klik untuk semak</a>.
-                            </div>
-                            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"
-                                aria-label="Tutup"></button>
+                        <div class="info-row">
+                            <div class="info-icon"><i class="bi bi-card-text"></i></div>
+                            <div class="info-label">ID Pekerja</div>
+                            <div class="info-value">{{ Auth::user()->id_pekerja }}</div>
                         </div>
-                    @break
-
-                    @case('Disyorkan')
-                        <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
-                            <i class="bi bi-check-circle-fill me-2"></i>
-                            <div>
-                                <strong>Makluman!</strong> Anda mempunyai {{ $count }} permohonan berstatus
-                                <strong>"Disyorkan"</strong>.
-                                <a href="{{ route('permohonan.index') }}" class="alert-link">Klik untuk semak</a>.
-                            </div>
-                            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"
-                                aria-label="Tutup"></button>
+                        <div class="info-row">
+                            <div class="info-icon"><i class="bi bi-briefcase"></i></div>
+                            <div class="info-label">Jawatan</div>
+                            <div class="info-value">{{ Auth::user()->jawatan ?? '-' }}</div>
                         </div>
-                    @break
-                @endswitch
-            @endif
-        @endforeach
-
-        {{-- Butang Lihat Semua jika ada sebarang status
-        @if (collect($statusCounts)->sum() > 0)
-            <div class="text-center mt-3">
-                <a href="{{ route('permohonan.index') }}" class="btn btn-outline-primary btn-sm">
-                    <i class="bi bi-list-check me-1"></i> Lihat Semua Permohonan
-                </a>
-            </div>
-        @endif --}}
-    </div>
-
-    <!-- Main Content -->
-    <div class="user-info-card">
-        <div class="user-info-header">
-            <h1 style="color: #ffffff">MAKLUMAT PENGGUNA</h1>
-            <p>Berikut adalah maklumat akaun anda seperti yang direkodkan dalam sistem.</p>
-        </div>
-
-        <div class="user-info-content">
-            {{-- @php
-                $userTypes = [
-                    1 => ['label' => 'Pengguna Biasa', 'class' => 'user-badge badge-pengguna-biasa'],
-                    2 => ['label' => 'Sekretariat', 'class' => 'user-badge badge-sekretariat'],
-                    3 => ['label' => 'Admin Jabatan', 'class' => 'user-badge badge-admin-jabatan'],
-                    4 => ['label' => 'Super Admin', 'class' => 'user-badge badge-super-admin'],
-                ];
-                $type = Auth::user()->type;
-                $userType = $userTypes[$type] ?? [
-                    'label' => 'Tidak Diketahui',
-                    'class' => 'user-badge badge-tidak-diketahui',
-                ];
-            @endphp
-
-            <div class="info-row">
-                <div class="info-icon"><i class="bi bi-person-badge"></i></div>
-                <div class="info-label">Jenis Pengguna</div>
-                <div class="info-value"><span style="color: white"
-                        class="{{ $userType['class'] }}">{{ $userType['label'] }}</span></div>
-            </div> --}}
-
-            <div class="info-row">
-                <div class="info-icon"><i class="bi bi-person-circle"></i></div>
-                <div class="info-label">Nama</div>
-                <div class="info-value">{{ Auth::user()->name }}</div>
-            </div>
-
-            <div class="info-row">
-                <div class="info-icon"><i class="bi bi-card-text"></i></div>
-                <div class="info-label">ID Pekerja</div>
-                <div class="info-value">{{ Auth::user()->id_pekerja }}</div>
-            </div>
-
-            <div class="info-row">
-                <div class="info-icon"><i class="bi bi-briefcase"></i></div>
-                <div class="info-label">Jawatan</div>
-                <div class="info-value">{{ Auth::user()->jawatan ?? '-' }}</div>
-            </div>
-
-            @php
-                $jabatan = Auth::user()->jabatan ?? '-';
-                // Tukar koma pertama kepada <br>
-                $jabatanFormatted = preg_replace('/,/', ',<br>', $jabatan, 1);
-            @endphp
-            <div class="info-row">
-                <div class="info-icon"><i class="bi bi-building"></i></div>
-                <div class="info-label">Jabatan</div>
-                <div class="info-value" style="overflow-wrap:break-word;word-break:break-word;min-width:0;">
-                    {!! $jabatanFormatted !!}
+                        @php
+                            $jabatan = Auth::user()->jabatan ?? '-';
+                            $jabatanFormatted = preg_replace('/,/', ',<br>', $jabatan, 1);
+                        @endphp
+                        <div class="info-row">
+                            <div class="info-icon"><i class="bi bi-building"></i></div>
+                            <div class="info-label">Jabatan</div>
+                            <div class="info-value" style="overflow-wrap:break-word;word-break:break-word;min-width:0;">
+                                {!! $jabatanFormatted !!}
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-icon"><i class="bi bi-envelope"></i></div>
+                            <div class="info-label">Emel</div>
+                            <div class="info-value">{{ Auth::user()->email }}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-icon"><i class="bi bi-telephone"></i></div>
+                            <div class="info-label">No. Telefon</div>
+                            <div class="info-value">{{ Auth::user()->notel }}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="info-row">
-                <div class="info-icon"><i class="bi bi-envelope"></i></div>
-                <div class="info-label">Emel</div>
-                <div class="info-value">{{ Auth::user()->email }}</div>
-            </div>
+            <!-- Status Bar di kanan -->
+            <div class="col-lg-6">
+                <div class="user-info-card h-100" style="font-size: 0.98rem;">
+                    <div class="card-body py-3 px-4">
+                        <div class="fw-semibold mb-3 text-primary" style="font-size:1.1em;">
+                            <i class="bi bi-bell-fill me-1"></i> Notifikasi
+                        </div>
+                        <div class="row text-center mb-3">
+                            <div class="col-6 col-md-3 mb-2">
+                                <div class="text-warning" style="font-size:2em;"><i class="bi bi-hourglass-split"></i>
+                                </div>
+                                <div class="fw-bold">{{ $statusCounts['Menunggu'] ?? 0 }}</div>
+                                <div style="font-size:0.95em;">Menunggu</div>
+                            </div>
+                            <div class="col-6 col-md-3 mb-2">
+                                <div class="text-primary" style="font-size:2em;"><i class="bi bi-star-fill"></i></div>
+                                <div class="fw-bold">{{ $statusCounts['Disyorkan'] ?? 0 }}</div>
+                                <div style="font-size:0.95em;">Disyorkan</div>
+                            </div>
+                            <div class="col-6 col-md-3 mb-2">
+                                <div class="text-danger" style="font-size:2em;"><i class="bi bi-x-circle-fill"></i>
+                                </div>
+                                <div class="fw-bold">{{ $statusCounts['Tidak Disyorkan'] ?? 0 }}</div>
+                                <div style="font-size:0.95em;">Tidak Disyorkan</div>
+                            </div>
+                            <div class="col-6 col-md-3 mb-2">
+                                <div class="text-secondary" style="font-size:2em;"><i
+                                        class="bi bi-exclamation-triangle-fill"></i>
+                                </div>
+                                <div class="fw-bold">{{ $statusCounts['Perlu Semakan Semula'] ?? 0 }}</div>
+                                <div style="font-size:0.95em;">Perlu Semakan Semula</div>
+                            </div>
+                        </div>
+                        <hr class="my-2">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <span class="text-muted" style="font-size:0.95em;">Jumlah Permohonan:</span>
+                                <span class="fw-bold">{{ array_sum($statusCounts) }}</span>
+                            </div>
+                            <a href="{{ route('permohonan.senarai') }}" class="btn btn-link btn-sm text-decoration-none">
+                                <i class="bi bi-list-ul"></i> Lihat Semua
+                            </a>
+                        </div>
+                        @if (isset($lastPermohonanDate))
+                            <div class="text-muted" style="font-size:0.93em;">
+                                <i class="bi bi-clock-history me-1"></i>
+                                Permohonan terakhir:
+                                {{ \Carbon\Carbon::parse($lastPermohonanDate)->format('d/m/Y h:i A') }}
+                            </div>
+                        @endif
 
-            <div class="info-row">
-                <div class="info-icon"><i class="bi bi-telephone"></i></div>
-                <div class="info-label">No. Telefon</div>
-                <div class="info-value">{{ Auth::user()->notel }}</div>
+                        <!-- SENARAI PERMOHONAN MENGIKUT STATUS -->
+                        <hr class="my-3">
+                        <div>
+                            @php
+                                $statusList = [
+                                    'Disyorkan' => ['color' => 'primary', 'icon' => 'star-fill'],
+                                    'Menunggu' => ['color' => 'warning', 'icon' => 'hourglass-split'],
+                                    'Tidak Disyorkan' => ['color' => 'danger', 'icon' => 'x-circle-fill'],
+                                    'Perlu Semakan Semula' => [
+                                        'color' => 'secondary',
+                                        'icon' => 'exclamation-triangle-fill',
+                                    ],
+                                ];
+                            @endphp
+
+                            @foreach ($statusList as $status => $meta)
+                                <div class="mb-2">
+                                    <div class="d-flex align-items-center mb-1" style="font-size:1em;">
+                                        <i class="bi bi-{{ $meta['icon'] }} text-{{ $meta['color'] }} me-2"></i>
+                                        <span
+                                            class="fw-semibold text-{{ $meta['color'] }}">{{ $status }}</span>
+                                        <span class="badge bg-light text-dark ms-2" style="font-size:0.95em;">
+                                            {{ isset($permohonanByStatus[$status]) ? count($permohonanByStatus[$status]) : 0 }}
+                                        </span>
+                                    </div>
+                                    @if (isset($permohonanByStatus[$status]) && count($permohonanByStatus[$status]))
+                                        <ul class="mb-1 ms-4 ps-0" style="list-style:none;">
+                                            @foreach ($permohonanByStatus[$status] as $permohonan)
+                                                <li class="text-truncate" style="max-width: 220px; font-size:0.97em;"
+                                                    title="{{ $permohonan->tajuk }}">
+                                                    <span class="text-muted me-1"
+                                                        style="font-size:0.9em;">&#8226;</span>
+                                                    {{ $permohonan->tajuk }}
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                        <br>
+                                    @else
+                                        <div class="text-muted ms-4" style="font-size:0.96em;">Tiada</div>
+                                        <br>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>

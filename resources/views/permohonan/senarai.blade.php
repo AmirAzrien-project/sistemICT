@@ -59,7 +59,11 @@
                     <tbody>
                         @forelse($permohonans as $permohonan)
                             <tr>
-                                <td class="text-center">{{ $permohonan->created_at->format('d/m/Y') }}</td>
+                                <td class="text-center">{{ $permohonan->created_at->format('d/m/Y') }}<br>
+                                    <span class="text-muted" style="font-size:0.95em">
+                                        {{ $permohonan->created_at->format('h:i A') }}
+                                    </span>
+                                </td>
                                 <td style="text-align: ">{{ $permohonan->skop }}</td>
                                 <td style="text-align: left">{{ $permohonan->tajuk }}</td>
                                 <td class="text-center">

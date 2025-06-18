@@ -88,9 +88,10 @@
                     <thead class="table-primary">
                         <tr>
                             {{-- <th style="width: 15%;">No Rujukan</th> --}}
+                            <th style="width: 15%;">Tarikh</th>
                             <th style="width: 20%;">Nama Projek</th>
                             <th style="width: 20%;">Jabatan</th>
-                            <th style="width: 20%;">Mesyuarat JPICT</th>
+                            <th style="width: 20%;">Mesyuarat JPICT Jabatan</th>
                             <th style="width: 20%;">Mesyuarat JPICT Negeri</th>
                             <th style="width: 10%;">Status</th>
                         </tr>
@@ -99,8 +100,26 @@
                         @forelse ($permohonans as $p)
                             <tr>
                                 {{-- <td style="text-align:left">{{ $p->no_rujukan }}</td> --}}
-                                <td class="align-middle">{{ $p->tajuk }}</td>
-                                <td class="align-middle">{{ $p->jabatan }}</td>
+                                <td class="text-center">
+                                    {{ \Carbon\Carbon::parse($p->created_at)->format('d/m/Y') }}<br>
+                                    <span class="text-muted" style="font-size:0.95em">
+                                        {{ \Carbon\Carbon::parse($p->created_at)->format('h:i A') }}
+                                    </span>
+                                </td>
+                                <td class="align-middle">
+                                    <span
+                                        style="max-width: 180px; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: middle; cursor: pointer;"
+                                        data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $p->tajuk }}">
+                                        {{ $p->tajuk }}
+                                    </span>
+                                </td>
+                                <td class="align-middle">
+                                    <span
+                                        style="max-width: 180px; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: middle; cursor: pointer;"
+                                        data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $p->jabatan }}">
+                                        {{ $p->jabatan }}
+                                    </span>
+                                </td>
                                 <td class="align-middle text-center">
                                     <a href="{{ route('mesyuarat.edit', ['permohonan_id' => $p->id, 'peringkat_mesyuarat' => 1]) }}"
                                         class="btn btn-outline-primary rounded px-4 py-2 d-inline-flex align-items-center gap-2 shadow-sm"
@@ -186,6 +205,11 @@
             if (event.persisted || performance.getEntriesByType("navigation")[0]?.type === "back_forward") {
                 hideLoadingOverlay();
             }
+        });
+
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+            new bootstrap.Tooltip(tooltipTriggerEl);
         });
     </script>
 

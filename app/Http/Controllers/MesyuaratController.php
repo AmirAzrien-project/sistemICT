@@ -25,6 +25,9 @@ class MesyuaratController extends Controller
             $permohonans->where('jabatan', 'like', '%' . $request->search_jabatan . '%');
         }
 
+        // **Sort by created_at DESC (latest first)**
+        $permohonans->orderBy('created_at', 'desc');
+
         // Ambil semua data dahulu
         $permohonans = $permohonans->get();
 
