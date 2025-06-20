@@ -65,6 +65,7 @@ Sediakan pangkalan data dan masukkan data asas.
 * Semak file DatabaseSeeder.php sebelum mula proses migration.
 ```bash
 php artisan migrate
+php artisan db:seed
 ```
 
 Arahan ini akan cipta semua jadual dan isikan data contoh untuk sistem berfungsi dengan betul.
